@@ -19,3 +19,7 @@ export const getWhsProductsByWarehouse = (warehouseId: number) => {
         }
     });
 }
+
+export const getWarehouseByProdId = (id: number) => {
+    return axios.get(`${apiPrefix}/${id}`);
+}

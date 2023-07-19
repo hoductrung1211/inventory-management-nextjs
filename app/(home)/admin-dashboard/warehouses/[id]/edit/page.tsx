@@ -3,7 +3,6 @@ import BackwardButton from "@/components/BackwardButton";
 import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import { Color } from "@/utils/constants/colors";
-import useActiveNav from "@/utils/hooks/useActiveNav";
 import useNotification from "@/utils/hooks/useNotification";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,7 +20,6 @@ export default function Page({
 }: {
     params: {id: string}
 }) {
-    const [_, setActiveNav] = useActiveNav();
     const router = useRouter();
     const notify = useNotification();
     const warehouseId = Number.parseInt(params.id);
@@ -34,7 +32,6 @@ export default function Page({
     ]);
 
     useEffect(() => {
-        setActiveNav("Warehouses");
         fetchWarehouse();
         fetchBranches();
     }, []);
@@ -168,10 +165,7 @@ export default function Page({
                                             value: e.target.value,
                                         },
                                         ...fields.slice(idx + 1)
-                                    ]);
-
-                                    console.log(fields.slice(0, idx));
-                                    console.log(fields.slice(idx + 1));
+                                    ]); 
                                 }}
                                 errorText={field.errorText}
                                 key={field.label + field.errorText}

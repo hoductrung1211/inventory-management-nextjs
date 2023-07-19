@@ -7,7 +7,6 @@ import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
-import useActiveNav from "@/utils/hooks/useActiveNav"
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,14 +20,12 @@ interface IWarehouseData {
 
 export default function Page() {
     const [showLoading, hideLoading] = useLoadingAnimation();
-    const [_, setActiveNav] = useActiveNav();
     const [warehouses, setWarehouses] = useState<IWarehouseData[]>([]);
     const [filterdWarehouses, setFilteredWarehouses] = useState<IItem[]>([]);
     const router = useRouter();
     const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
-        setActiveNav("Warehouses");
         fetchWarehouses();
     }, []);
 

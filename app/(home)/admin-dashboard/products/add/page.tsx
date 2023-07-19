@@ -1,6 +1,6 @@
 'use client';
-import { IBranchResponse, getAllBranches } from "@/api/branch";
-import { createWarehouse } from "@/api/warehouse";
+import { GetAllCategories, ICategoryResponse, createCategory } from "@/api/category";
+import { createProduct } from "@/api/product";
 import BackwardButton from "@/components/BackwardButton";
 import Title from "@/components/DashboardTitle";
 import DropDown, { IDropdownData } from "@/components/DropDown";
@@ -19,27 +19,33 @@ export default function Page() {
     const notify = useNotification();
     const [fields, setFields] = useState([
         {label: "Name", value: "", icon: "signature", isRequired: true, errorText: "", type: "text"},
-        {label: "Address", value: "", icon: "map-location-dot", isRequired: true, errorText: "", type: "text"},
+        {label: "SKU", value: "", icon: "lightbulb", isRequired: true, errorText: "", type: "text"},
+        {label: "Dimensions", value: "", icon: "arrows-left-right", isRequired: false, errorText: "", type: "text"},
+        {label: "Weight", value: "", icon: "weight-hanging", isRequired: false, errorText: "", type: "text"},
+        {label: "Price", value: "", icon: "tag", isRequired: true, errorText: "", type: "text"},
+        {label: "Image URL", value: "", icon: "image", isRequired: false, errorText: "", type: "text"},
     ]);
-    const [branchId, setBranchId] = useState(-1);
-    const [branchDataset, setBranchDataset] = useState<IDropdownData[]>([]);
+    const [catId, setCatId] = useState(0);
+    const [catDataset, setCatDataset] = useState<IDropdownData[]>([]);
+
     const [showLoading, hideLoading] = useLoadingAnimation();
 
     useEffect(() => {
-        fetchBranches();
+        fetchCategories();
     }, []);
 
-    async function fetchBranches () {
+    async function fetchCategories() {
         try {
             showLoading();
-            const {data: branches} = await getAllBranches();
-            const newBranchDataset = branches.map((branch: IBranchResponse) => ({
-                text: branch.name,
-                value: branch.id,
-            }));
-            setBranchDataset(newBranchDataset);
-            // If there is no branch, set default value to check required constraint
-            setBranchId(newBranchDataset[0].value ?? -1); 
+            const { data: cats } = await GetAllCategories();
+
+            setCatDataset(cats.map((cat: ICategoryResponse) => ({
+                text: cat.name,
+                value: cat.id,
+            })));
+
+            setCatId(cats[0].id ?? -1); 
+
         }
         catch (error) {
             console.log(error);
@@ -49,22 +55,21 @@ export default function Page() {
         }
     }
 
-    const requestCreateBranch = async () => {
+    const requestCreateProduct = async () => {
         const checked = checkConstraint();
         if (!checked) {
-            notify("Create a warehouse failed!", "error");
+            notify("Create a category failed", "error");
             return;
         }
-
         try {
-            await createWarehouse(branchId, fields[0].value, fields[1].value);
+            await createProduct(fields[0].value, fields[1].value, catId + "", fields[2].value, fields[3].value, fields[4].value, fields[5].value);
             router.push("./");
-            notify("Create a warehouse successfully!", "success");
+            notify("Create a category successfully", "success");
         }
         catch (error) {
             console.log(error);
-            notify("Create a warehouse failed!", "error");
-        }
+            notify("Create a category failed", "error");
+        } 
     }
 
     function checkConstraint() {
@@ -73,20 +78,19 @@ export default function Page() {
 
         fields.forEach(field => {
             const checkErrorValue = field.isRequired && !field.value;
-
             if (checkErrorValue) {
                 errors.push("Cannot blank this field");
                 isError = true;
             }
             else errors.push("");
-        })
+        });
 
         setFields(fields.map((field, idx) => ({
             ...field,
             errorText: errors[idx],
         })));
         return !isError;
-    }
+    } 
 
     return (
         <section className="w-full flex flex-col">
@@ -97,21 +101,21 @@ export default function Page() {
                         text="Save"
                         color={Color.WHITE}
                         bgColor={Color.GREEN} 
-                        actionHandler={requestCreateBranch}
+                        actionHandler={requestCreateProduct}
                     />
                 </div>
             </Header>
             <Main>
                 <div className="w-[480px] h-full flex flex-col gap-8 p-5 mx-auto border-2 rounded-md shadow-md">
                     <Title
-                        text="Create a warehouse"
+                        text="Create a product"
                         icon="plus"
                         color={Color.GREEN}
                     />
-                    <div className="relative h-60">
+                    <div className="relative h-40">
                         <Image
                             className="object-contain"
-                            src="/images/warehouse2.webp"
+                            src="/images/product.jpg"
                             alt="Building image"
                             fill
                         />
@@ -120,8 +124,8 @@ export default function Page() {
                         <DropDown
                             label="Branch"
                             icon="building"
-                            dataset={branchDataset}
-                            handleChange={(e) => setBranchId(Number.parseInt(e.target.value))}
+                            dataset={catDataset}
+                            handleChange={(e) => setCatId(Number.parseInt(e.target.value))}
                         /> 
                         {fields.map((field, idx) => 
                             <EditText

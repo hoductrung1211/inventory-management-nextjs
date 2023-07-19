@@ -6,11 +6,12 @@ import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
-import useActiveNav from "@/utils/hooks/useActiveNav"
+import filterByFields, { toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface IProductData {
+export interface IProductData {
     catName: string | undefined; 
     id: number; 
     name: string; 
@@ -23,12 +24,13 @@ interface IProductData {
 }
 
 export default function Page() {
-    const [_, setActiveNav] = useActiveNav();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const [products, setProducts] = useState<IProductData[]>([]);
+    const router = useRouter();
+    const [filterProducts, setFilterProducts] = useState<IProductData[]>([]);
+    const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
-        setActiveNav("Products");
         fetchProducts();
     }, []);
 
@@ -41,24 +43,18 @@ export default function Page() {
             const prodRes = await getAllProducts();
             const catRes = await GetAllCategories();
             
-            if (prodRes.status === 200) {
-                prodData = prodRes.data;
-
-                if (catRes.status === 200) {
-                    catData = catRes.data;
-                }
-                
-                const newProducts = prodData.map((prod) => {
-                    const cat = catData.find(cat => cat.id == prod.categoryId);
-
-                    return ({
-                        ...prod,
-                        catName: cat?.name,
-                    });
+            prodData = prodRes.data;
+            catData = catRes.data;
+            
+            const newProducts = prodData.map((prod) => {
+                const cat = catData.find(cat => cat.id == prod.categoryId);
+                return ({
+                    ...prod,
+                    catName: cat?.name,
                 });
-
-                setProducts(newProducts);
-            }
+            });
+            setFilterProducts(newProducts);
+            setProducts(newProducts);
         } 
         catch (error) {
             console.log(error);
@@ -75,7 +71,7 @@ export default function Page() {
                     text="Add Product"
                     color={Color.WHITE}
                     bgColor={Color.GREEN} 
-                    actionHandler={() => {}}
+                    actionHandler={() => {router.push("products/add")}}
                 />
             </Header>
             <Main>
@@ -83,6 +79,17 @@ export default function Page() {
                     <section className="flex gap-2 h-10">
                         <SearchInput
                             placeholder="Type branch ID here..."
+                            handleChange={(e) => {
+                                const newSearchValue = e.target.value;
+                                setSearchValue(newSearchValue);
+                                const filterList = filterByFields(
+                                        toIndexSignature(products), 
+                                        newSearchValue.trim(), 
+                                        ["id", "sku"]
+                                    );
+                                setFilterProducts(filterList);
+                            }}
+                            value={searchValue}
                         />
                     </section>
                     <Table
@@ -95,7 +102,7 @@ export default function Page() {
                             {id: 6, text: "Weight", key: "weight"}, 
                             {id: 7, text: "tempPrice", key: "tempPrice"}, 
                         ]}
-                        dataSet={products}
+                        dataSet={filterProducts}
                     />
                 </div>
             </Main>

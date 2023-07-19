@@ -7,7 +7,6 @@ import EditText from "@/components/EditText";
 import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import { Color } from "@/utils/constants/colors";
-import useActiveNav from "@/utils/hooks/useActiveNav";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import useNotification from "@/utils/hooks/useNotification";
 import Image from "next/image";
@@ -15,7 +14,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-    const [_, setActiveNav] = useActiveNav();
     const router = useRouter();
     const notify = useNotification();
     const [fields, setFields] = useState([
@@ -26,7 +24,6 @@ export default function Page() {
     const [showLoading, hideLoading] = useLoadingAnimation();
 
     useEffect(() => {
-        setActiveNav("Product Categories");
     }, []);
 
     const requestCreateCategory = async () => {
@@ -36,7 +33,7 @@ export default function Page() {
             return;
         }
         try {
-            await createCategory(fields[0].value, fields[1].value, fields[2].value);
+            // await (fields[0].value, fields[1].value, fields[2].value);
             router.push("./");
             notify("Create a category successfully", "success");
         }
@@ -82,7 +79,7 @@ export default function Page() {
             <Main>
                 <div className="w-[480px] h-full flex flex-col gap-8 p-5 mx-auto border-2 rounded-md shadow-md">
                     <Title
-                        text="Create a warehouse"
+                        text="Create a category"
                         icon="plus"
                         color={Color.GREEN}
                     />

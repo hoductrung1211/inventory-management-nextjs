@@ -4,13 +4,10 @@ import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table, { ColType } from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
-import useActiveNav from "@/utils/hooks/useActiveNav";
 import { useEffect } from "react";
 
 export default function Page() {
-    const [_, setActiveNav] = useActiveNav();
     useEffect(() => {
-        setActiveNav("Users");
     }, []);
     
     return (
@@ -28,6 +25,8 @@ export default function Page() {
                     <section className="flex gap-2 h-10">
                         <SearchInput
                             placeholder="Type username here..."
+                            value=""
+                            handleChange={() => {}}
                         />
                     </section>
                     <Table

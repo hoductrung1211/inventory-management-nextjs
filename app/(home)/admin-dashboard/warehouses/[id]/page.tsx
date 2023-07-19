@@ -6,7 +6,6 @@ import Title from "@/components/DashboardTitle";
 import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import { Color } from "@/utils/constants/colors";
-import useActiveNav from "@/utils/hooks/useActiveNav";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -37,7 +36,6 @@ export default function Page({
 }: {
     params: {id: string}
 }) {
-    const [_, setActiveNav] = useActiveNav();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const router = useRouter();
     const warehouseId = Number.parseInt(params.id);
@@ -52,7 +50,6 @@ export default function Page({
     const notify = useNotification();
 
     useEffect(() => {
-        setActiveNav("Warehouses");
         fetchWarehouse();
         fetchWarehouseProducts();
     }, []);
@@ -225,7 +222,7 @@ function ProductSection({
 }) {
     return (
         <section className="w-3/5 p-3 pt-6 h-full flex flex-col border-2 rounded-r-sm gap-6">
-            <Title text="Warehouses belong to this branch" icon="warehouse" color={Color.GREEN} />
+            <Title text="Products belong to this warehouse" icon="box-open" color={Color.GREEN} />
             <Table
                 columns={[
                     {id: 1, text: "Id", key: "id", linkRoot: "/admin-dashboard/products/"},

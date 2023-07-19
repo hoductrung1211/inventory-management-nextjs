@@ -5,7 +5,6 @@ import EditText from "@/components/EditText";
 import Header, { Button } from "@/layouts/DashboardHeader"
 import Main from "@/layouts/DashboardMain"
 import { Color } from "@/utils/constants/colors"
-import useActiveNav from "@/utils/hooks/useActiveNav";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { createBranch } from "@/api/branch";
@@ -13,7 +12,6 @@ import { useRouter } from "next/navigation";
 import useNotification from "@/utils/hooks/useNotification";
  
 export default function Page() {
-    const [_, setActiveNav] = useActiveNav();
     const router = useRouter();
     const notify = useNotification();  
     const [fields, setFields] = useState([
@@ -22,7 +20,6 @@ export default function Page() {
     ])
 
     useEffect(() => {
-        setActiveNav("Branches");
     }, []);
     
     const requestCreateBranch = async () => {

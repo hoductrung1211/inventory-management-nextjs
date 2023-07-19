@@ -11,7 +11,9 @@ import Title from "@/components/DashboardTitle";
 import InfoBar from "@/components/InfoBar";
 import EditText from "@/components/EditText";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation"; 
-import { getCategoryById, updateCategory } from "@/api/category";
+import { getProductById, updateProduct } from "@/api/product";
+import { GetAllCategories, ICategoryResponse } from "@/api/category";
+import DropDown, { IDropdownData } from "@/components/DropDown";
 
 export default function Page({
     params
@@ -20,27 +22,56 @@ export default function Page({
 }) {
     const router = useRouter();
     const notify = useNotification();
-    const categoryId = Number.parseInt(params.id);
+    const productId = Number.parseInt(params.id);
     const [showLoading, hideLoading] = useLoadingAnimation();
     const [fields, setFields] = useState([
-        {label: "Name", value: "", icon: "signature", isRequired: true, errorText: ""},
-        {label: "Description", value: "", icon: "comment-dots", isRequired: true, errorText: ""},
-        {label: "Image URL", value: "", icon: "image", isRequired: true, errorText: ""},
+        {label: "Name", value: "", icon: "signature", isRequired: true, errorText: "", type: "text"},
+        {label: "SKU", value: "", icon: "lightbulb", isRequired: true, errorText: "", type: "text"},
+        {label: "Dimensions", value: "", icon: "arrows-left-right", isRequired: false, errorText: "", type: "text"},
+        {label: "Weight", value: "", icon: "weight-hanging", isRequired: false, errorText: "", type: "text"},
+        {label: "Price", value: "", icon: "tag", isRequired: true, errorText: "", type: "text"},
+        {label: "Image URL", value: "", icon: "image", isRequired: false, errorText: "", type: "text"},
     ]);
+    const [catDataset, setCatDataset] = useState<IDropdownData[]>([]);
+    const [catId, setCatId] = useState(0);
 
     useEffect(() => {
-        fetchCategory(); 
+        fetchProduct(); 
+        fetchCategories();
     }, []);
-
-    async function fetchCategory() {
+    async function fetchCategories() {
         try {
             showLoading();
-            const {data} = await getCategoryById(categoryId);
+            const { data: cats } = await GetAllCategories();
+
+            setCatDataset(cats.map((cat: ICategoryResponse) => ({
+                text: cat.name,
+                value: cat.id,
+            })));
+        }
+        catch (error) {
+            console.log(error);
+        }
+        finally {
+            hideLoading();
+        }
+    }
+    async function fetchProduct() {
+        try {
+            showLoading();
+            const {data} = await getProductById(productId);
+            console.log(params);
+            console.log(data);
             setFields([
                 {...fields[0], value: data.name},
-                {...fields[1], value: data.description},
-                {...fields[2], value: data.imageUrl},
+                {...fields[1], value: data.sku},
+                {...fields[2], value: data.dimensions},
+                {...fields[3], value: data.weight},
+                {...fields[4], value: data.tempPrice},
+                {...fields[5], value: data.imageUrl},
             ]);
+
+            setCatId(data.categoryId);
         }
         catch (error) {
             console.log(error);
@@ -59,7 +90,7 @@ export default function Page({
 
         try {
             showLoading();
-            await updateCategory(categoryId, fields[0].value, fields[1].value, fields[2].value);
+            await updateProduct(productId, fields[0].value, fields[1].value, catId, fields[2].value, fields[3].value, fields[4].value, fields[5].value);
             router.push("./");
             notify("Edit successfully!", "success");
         }
@@ -111,7 +142,7 @@ export default function Page({
                     <section className="relative w-1/2 flex place-content-center">
                         <Image 
                             className="object-contain"
-                            src={fields[2].value ? fields[2].value : ""}
+                            src={ fields[5].value ? fields[5].value : ""}
                             alt="Branch images"
                             fill
                         />
@@ -122,8 +153,14 @@ export default function Page({
                             icon="pencil"
                         />
                         <form className="mt-10 mx-auto w-[480px] flex flex-col gap-4">
-                            <InfoBar label="Id" icon="hashtag" value={categoryId} />
-                           
+                            <InfoBar label="Id" icon="hashtag" value={productId} />
+                            <DropDown
+                                label="Branch"
+                                icon="building"
+                                dataset={catDataset}
+                                handleChange={(e) => setCatId(Number.parseInt(e.target.value))}
+                                value={catId}
+                            /> 
                             {fields.map((field, idx) => 
                                 <EditText
                                     icon={field.icon}

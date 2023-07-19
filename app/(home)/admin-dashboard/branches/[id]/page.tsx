@@ -9,7 +9,6 @@ import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
-import useActiveNav from "@/utils/hooks/useActiveNav";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import useNotification from "@/utils/hooks/useNotification";
 import usePopup from "@/utils/hooks/usePopup";
@@ -22,7 +21,6 @@ export default function Page({
 }: {
     params: {id: string}
 }) {
-    const [_, setActiveNav] = useActiveNav();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const [branch, setBranch] = useState<IBranchResponse>({
         id: 1,
@@ -36,7 +34,6 @@ export default function Page({
     const notify = useNotification();
 
     useEffect(() => {
-        setActiveNav("Branches");
         fetchBranch();
     }, []);
 

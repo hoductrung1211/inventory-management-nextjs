@@ -6,13 +6,11 @@ import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
-import useActiveNav from "@/utils/hooks/useActiveNav"
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-    const [_, setActiveNav] = useActiveNav();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const [categories, setCategories] = useState([]);
     const [filterdCateogris, setFilterdCateogris] = useState<IItem[]>([]);
@@ -20,7 +18,6 @@ export default function Page() {
     const router = useRouter();
 
     useEffect(() => {
-        setActiveNav("Product Categories");
         fetchCategories();
     }, []);
 

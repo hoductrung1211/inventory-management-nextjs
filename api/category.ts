@@ -24,3 +24,15 @@ export const createCategory = (name: string, description: string, imageUrl: stri
     formData.append("imageUrl", imageUrl);
     return axios.post(`${apiPrefix}`, formData);
 }
+
+export const updateCategory = (id: number, name: string, description: string, imageUrl: string) => {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("imageUrl", imageUrl);
+    return axios.put(`${apiPrefix}/${id}`, formData);
+}
+
+export const deleteCategory = (id: number) => {
+    return axios.delete(`${apiPrefix}/${id}`);
+}
