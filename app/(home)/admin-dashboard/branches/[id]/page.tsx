@@ -21,7 +21,11 @@ export default function Page({
 }: {
     params: {id: string}
 }) {
+    const router = useRouter();
+    const popup = usePopup();
+    const notify = useNotification();
     const [showLoading, hideLoading] = useLoadingAnimation();
+    
     const [branch, setBranch] = useState<IBranchResponse>({
         id: 1,
         name: "",
@@ -29,9 +33,6 @@ export default function Page({
     });
     const [warehouses, setWarehouses] = useState<IWarehouseResponse[]>([]);
     const branchId = Number.parseInt(params.id);
-    const router = useRouter();
-    const popup = usePopup();
-    const notify = useNotification();
 
     useEffect(() => {
         fetchBranch();
@@ -124,7 +125,7 @@ function InfoSection({
 }: {
     branch: IBranchResponse
 }) {
-    const inforBars: {label: string, key: "id" | "name" | "address", icon: string}[] = [
+    const inforBars: { label: string, key: "id" | "name" | "address", icon: string }[] = [
         {label: "Id", key: "id", icon: "hashtag"},
         {label: "Name", key: "name", icon: "signature"},
         {label: "Address", key: "address", icon: "map-location-dot"},

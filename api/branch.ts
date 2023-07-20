@@ -3,17 +3,17 @@ import axios from "./axios.config";
 const apiPrefix = "/branches";
 
 export interface IBranchResponse {
-    id?: number,
-    name?: string,
-    address?: string,
+    id: number,
+    name: string,
+    address: string,
 }
 
 export const getAllBranches = () => {
-    return axios.get(apiPrefix);
+    return axios.get<IBranchResponse[]>(apiPrefix);
 }
 
 export const getBranchById = (id: number) => {
-    return axios.get(`${apiPrefix}/${id}`)
+    return axios.get<IBranchResponse>(`${apiPrefix}/${id}`)
 }
 
 export const createBranch = (name: string = "", address: string = "") => {

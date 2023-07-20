@@ -1,5 +1,5 @@
 'use client';
-import { GetAllCategories } from "@/api/category";
+import { GetAllCategories, ICategoryResponse } from "@/api/category";
 import SearchInput from "@/components/SearchInput";
 import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
@@ -11,11 +11,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-    const [showLoading, hideLoading] = useLoadingAnimation();
-    const [categories, setCategories] = useState([]);
-    const [filterdCateogris, setFilterdCateogris] = useState<IItem[]>([]);
-    const [searchValue, setSearchValue] = useState("");
     const router = useRouter();
+    const [showLoading, hideLoading] = useLoadingAnimation();
+    const [categories, setCategories] = useState<ICategoryResponse[]>([]);
+    const [filterdCategories, setFilterdCategories] = useState<IItem[]>([]);
+    const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
         fetchCategories();
@@ -25,9 +25,8 @@ export default function Page() {
         try {
             showLoading();
             const {data} = await GetAllCategories();
-
             setCategories(data);
-            setFilterdCateogris(data);
+            setFilterdCategories(toIndexSignature(data));
         } 
         catch (error) {
             console.log(error);
@@ -61,7 +60,7 @@ export default function Page() {
                                         newSearchValue.trim(), 
                                         ["id", "name"]
                                     );
-                                setFilterdCateogris(filterList);
+                                setFilterdCategories(filterList);
                             }}
                         />
                     </section>
@@ -71,7 +70,7 @@ export default function Page() {
                             {id: 2, text: "Category Name", key: "name"},
                             {id: 3, text: "Description", key: "description"}, 
                         ]}
-                        dataSet={filterdCateogris}
+                        dataSet={filterdCategories}
                     />
                 </div>
             </Main>

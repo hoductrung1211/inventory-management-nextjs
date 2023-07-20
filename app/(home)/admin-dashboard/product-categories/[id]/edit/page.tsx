@@ -20,14 +20,15 @@ export default function Page({
 }) {
     const router = useRouter();
     const notify = useNotification();
-    const categoryId = Number.parseInt(params.id);
     const [showLoading, hideLoading] = useLoadingAnimation();
+    
     const [fields, setFields] = useState([
         {label: "Name", value: "", icon: "signature", isRequired: true, errorText: ""},
         {label: "Description", value: "", icon: "comment-dots", isRequired: true, errorText: ""},
         {label: "Image URL", value: "", icon: "image", isRequired: true, errorText: ""},
     ]);
-
+    const categoryId = Number.parseInt(params.id);
+    
     useEffect(() => {
         fetchCategory(); 
     }, []);
@@ -56,7 +57,6 @@ export default function Page({
             notify("Edit failed!", "error");
             return;
         }
-
         try {
             showLoading();
             await updateCategory(categoryId, fields[0].value, fields[1].value, fields[2].value);

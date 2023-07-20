@@ -26,10 +26,11 @@ export default function DropDown({
             
             <select 
                 className="w-full h-full pl-2 outline-none border-l-2"
-                onChange={handleChange}                
+                onChange={handleChange}
+                value={value}              
             >
                 {dataset.map(data => 
-                    <option key={data.value} value={data.value} selected={value == data.value}>{data.text}</option>    
+                    <option key={data.value} value={data.value}>{data.text}</option>    
                 )}
             </select>
         </label>

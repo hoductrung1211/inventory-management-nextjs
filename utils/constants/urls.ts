@@ -20,4 +20,5 @@ export const enum adminUrls {
     Suppliers = adminBasePath + "suppliers/",
     Branches = adminBasePath + "branches/",
     Users = adminBasePath + "users/",
+    Employees = adminBasePath + "employees/",
 }

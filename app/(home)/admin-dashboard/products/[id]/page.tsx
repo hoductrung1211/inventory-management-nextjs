@@ -16,7 +16,7 @@ import InfoBar from "@/components/InfoBar";
 import Image from "next/image";
 import Main from "@/layouts/DashboardMain";
 import { IProductData } from "../page";
-import { IWarehouseProductResponse, getWarehouseByProdId } from "@/api/warehouseProduct";
+import { IWarehouseProductResponse, getWhsProductByProdId } from "@/api/warehouseProduct";
 import { IWarehouseResponse, getAllWarehouses } from "@/api/warehouse";
 
 interface IWarehouse {
@@ -30,11 +30,11 @@ export default function Page({
 }: {
     params: {id: string}
 }) {
-    const [showLoading, hideLoading] = useLoadingAnimation();
     const router = useRouter();
-    const productId = Number.parseInt(params.id);
+    const [showLoading, hideLoading] = useLoadingAnimation();
     const popup = usePopup();
     const notify = useNotification();
+
     const [product, setProduct] = useState<IProductData>({
         id: 0,
         name: "",
@@ -47,6 +47,7 @@ export default function Page({
         imageUrl: "",
     });
     const [warehouses, setWarehouses] = useState<IWarehouse[]>([]);
+    const productId = Number.parseInt(params.id);
 
     useEffect(() => {
         fetchProduct();
@@ -74,17 +75,19 @@ export default function Page({
     async function fetchWarehouses() {
         try {
             showLoading();
-            const {data: prodWarehouseData} = await getWarehouseByProdId(productId);
+            const {data: prodWarehouseData} = await getWhsProductByProdId(productId);
             const {data: warehouseData}  = await getAllWarehouses();
-            setWarehouses(prodWarehouseData.map((pwhs: IWarehouseProductResponse ) => {
-                const whsObj = warehouseData.find((whs: IWarehouseResponse) => pwhs.warehouseId === whs.id);
-                console.log(whsObj)
-                if (whsObj)
-                    return {
-                        id: pwhs.warehouseId,
-                        name: whsObj.name,
-                        quantity: pwhs.quantity
-                    }
+            setWarehouses(prodWarehouseData.map(pwhs => {
+                const {name} = warehouseData.
+                    find(whs => pwhs.warehouseId === whs.id) 
+                    ?? {name: ""};
+                const id = pwhs.warehouseId;
+                const quantity = pwhs.quantity;
+                return {
+                    id,
+                    name,
+                    quantity,
+                };
             }));
         }
         catch (error) {

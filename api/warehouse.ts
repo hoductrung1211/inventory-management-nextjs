@@ -11,14 +11,14 @@ export interface IWarehouseResponse {
 
 export const getAllWarehouses = (branchId?: number) => {
     if (branchId)
-        return axios.get(apiPrefix, {
+        return axios.get<IWarehouseResponse[]>(apiPrefix, {
             params: {"branch" : branchId}
         });
-    return axios.get(apiPrefix);
+    return axios.get<IWarehouseResponse[]>(apiPrefix);
 }
 
 export const getWarehouseById = (id: number) => {
-    return axios.get(`${apiPrefix}/${id}`);
+    return axios.get<IWarehouseResponse>(`${apiPrefix}/${id}`);
 }
 
 export const createWarehouse = (branchId: number, name: string, address: string) => {

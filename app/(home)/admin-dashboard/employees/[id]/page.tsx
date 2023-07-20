@@ -1,5 +1,5 @@
 'use client';
-import { getBranchById } from "@/api/branch";
+import { getAllBranches, getBranchById } from "@/api/branch";
 import { deleteWarehouse, getWarehouseById } from "@/api/warehouse";
 import BackwardButton from "@/components/BackwardButton";
 import Title from "@/components/DashboardTitle";
@@ -11,61 +11,87 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import InfoBar from "@/components/InfoBar";
-import Table from "@/layouts/Table";
-import { getWhsProductsByWarehouse, IWarehouseProductResponse } from "@/api/warehouseProduct";
-import { IProductResponse, getAllProducts } from "@/api/product";
+import Table from "@/layouts/Table"; 
 import usePopup from "@/utils/hooks/usePopup";
 import Popup from "@/components/Popup";
 import useNotification from "@/utils/hooks/useNotification";
+import { deleteEmployee, getAllEmployees, getEmployeeById } from "@/api/employee";
 
-interface IWarehouse {
+interface IEmployee {
     id: number,
     name: string,
+    gender: string,
+    dateOfBirth: string,
+    email: string,
     address: string,
-    branchName: string,
-}
+    salary: number,
+    imageUrl: string,
+    branch: string,
+    managerId: number | undefined,
+    manager: string | undefined,
+} 
 
-interface IProduct {
-    id: number,
-    name: string,
-    quantity: number,
-}
+
 
 export default function Page({
     params
 }: {
     params: {id: string}
 }) {
-    const [showLoading, hideLoading] = useLoadingAnimation();
-    const router = useRouter();
-    const warehouseId = Number.parseInt(params.id);
-    const [products, setProducts] = useState<IProduct[]>([]);
-    const [warehouse, setWarehouse] = useState<IWarehouse>({
-        id: 1,
-        name: "",
-        address: "",
-        branchName: ""
-    });
     const popup = usePopup();
     const notify = useNotification();
+    const [showLoading, hideLoading] = useLoadingAnimation();
+    const router = useRouter();
+
+    const employeeId = Number.parseInt(params.id);
+    const [employee, setEmployee] = useState<IEmployee>({
+        id: 0,
+        name: "string",
+        gender: "string",
+        dateOfBirth: "string",
+        email: "string",
+        salary: 0,
+        address: "",
+        imageUrl: "string",
+        branch: "string",
+        managerId: 0,
+        manager: "string",
+    });
 
     useEffect(() => {
-        fetchWarehouse();
-        fetchWarehouseProducts();
+        fetchEmployee();
     }, []);
 
-    async function fetchWarehouse() {
+    async function fetchEmployee() {
         try {
             showLoading();
-            const {data: warehouseData} = await getWarehouseById(warehouseId);
-            const {data: branchData} = await getBranchById(warehouseData.branchId);
+            const {data} = await getEmployeeById(employeeId);
+            const {data : brData} = await getAllBranches();
 
-            setWarehouse({
-                id: warehouseData.id,
-                name: warehouseData.name,
-                address: warehouseData.address,
-                branchName: branchData.name ?? ""
-            })
+            const fullName = data.lastName + " " + data.firstName;
+            const {name: branch} = brData.find(br => br.id === data.branchId) ?? {name: ""};
+            
+            const newEmployee = {
+                id: data.id,
+                name: fullName,
+                address: data.address ?? "",
+                gender: data.gender ? "Male" : "Female",
+                dateOfBirth: data.dateOfBirth?.slice(0, 10) ?? "",
+                email: data.email + "",
+                salary: data.salary ?? 0,
+                imageUrl: data.imageUrl + "",
+                branch: branch + "",
+                managerId: data.managerId,
+                manager: "",
+            }
+            
+            if (data.managerId != null) {
+                const {data : manager}  = await getEmployeeById(data.managerId);
+                const managerName = manager.lastName + " " + manager.firstName;
+                newEmployee.manager = managerName;
+            }
+
+            setEmployee(newEmployee);
         }
         catch (error) {
             console.log(error);
@@ -75,61 +101,31 @@ export default function Page({
         }
     }
 
-    async function fetchWarehouseProducts() {
+    async function deleteThisEmployee() {
         try {
             showLoading();
-            const {data: whProductData} = await getWhsProductsByWarehouse(warehouseId);
-            const {data: productData} = await getAllProducts();
-
-            const newProds: IProduct[] = [];
-
-            whProductData.forEach((whsProd: IWarehouseProductResponse) => {
-                const {name} = 
-                    productData.find((prod: IProductResponse) => whsProd.productId === prod.id) 
-                    ?? {name: ""};
-                    
-                newProds.push({
-                    id: whsProd.productId,
-                    name,
-                    quantity: whsProd.quantity
-                });
-            });
-
-            setProducts(newProds);
-        }
-        catch (error) {
-            console.log(error);
-        }
-        finally {
-            hideLoading();
-        }
-    }
-
-    async function deleteThisWarehouse() {
-        try {
-            showLoading();
-            await deleteWarehouse(warehouseId);
+            await deleteEmployee(employeeId);
             router.push("./")
-            notify("Delete warehouse successfully!", "success");
+            notify("Delete employee successfully!", "success");
         }
         catch (error) {
             console.log(error);
-            notify("Delete warehouse failed!", "error");
+            notify("Delete employee failed!", "error");
         }
         finally {
             hideLoading();
         }
     }
 
-    const deleteWarehousePopup = 
-        <Popup text="This warehouse will be deleted, you're sure?">
+    const deleteEmployeePopup = 
+        <Popup text="This employee will be deleted, you're sure?">
             <Button
                 text="Delete"
                 color={Color.WHITE}
                 bgColor={Color.RED} 
                 actionHandler={() => {
                     popup.hide();
-                    deleteThisWarehouse();
+                    deleteThisEmployee();
                 }}
             />
             <Button
@@ -149,22 +145,22 @@ export default function Page({
                         text="Edit"
                         color={Color.WHITE}
                         bgColor={Color.ORANGE} 
-                        actionHandler={() => router.push(`${warehouseId}/edit`)}
+                        actionHandler={() => router.push(`${employeeId}/edit`)}
                     />
                     <Button
                         text="Delete"
                         color={Color.WHITE}
                         bgColor={Color.RED} 
                         actionHandler={() => {
-                            popup.show(deleteWarehousePopup);
+                            popup.show(deleteEmployeePopup);
                         }}
                     />
                 </div>
             </Header>
             <Main>
                 <div className="w-full h-full flex gap-3">
-                    <InfoSection warehouse={warehouse} />
-                    <ProductSection products={products} />
+                    <InfoSection employee={employee} />
+                    {/* <ProductSection products={products} /> */}
                 </div>
             </Main>
         </section>
@@ -174,15 +170,21 @@ export default function Page({
 
 
 function InfoSection({
-    warehouse
+    employee
 }: {
-    warehouse: IWarehouse
+    employee: IEmployee
 }) {
-    const inforBars: {label: string, key: "id" | "name" | "address" | "branchName", icon: string}[] = [
+    const inforBars: {label: string, key: "id" | "name" | "address" | "branch" | "gender" | "dateOfBirth" | "email" | "salary" | "managerId" | "manager", icon: string}[] = [
         {label: "Id", key: "id", icon: "hashtag"},
-        {label: "Name", key: "name", icon: "signature"},
-        {label: "Address", key: "address", icon: "map-location-dot"},
-        {label: "Branch", key: "branchName", icon: "building"},
+        {label: "Full name", key: "name", icon: "signature"},
+        {label: "Gender", key: "gender", icon: "venus-mars"},
+        {label: "Birthday", key: "dateOfBirth", icon: "calendar"},
+        {label: "Address", key: "address", icon: "location-dot"},
+        {label: "Email", key: "email", icon: "envelope"},
+        {label: "Salary", key: "salary", icon: "money-check-dollar"},
+        {label: "Branch", key: "branch", icon: "building"},
+        {label: "Manager ID", key: "managerId", icon: "id-card"},
+        {label: "Manager", key: "manager", icon: "black-tie"},
     ];
 
     return (
@@ -191,21 +193,13 @@ function InfoSection({
                 text="Detailed Information"
                 icon="circle-info"
                 color={Color.BLUE}
-            />
-            <div className="relative w-full h-52">
-                <Image
-                    className="object-contain"
-                    src="/images/warehouse.webp"
-                    alt="Log in image"
-                    fill
-                /> 
-            </div>
+            /> 
             <div className="flex flex-col gap-3"> 
                 {inforBars.map(infoBar =>
                     <InfoBar
                         key={infoBar.label}
                         label={infoBar.label}
-                        value={warehouse?.[infoBar.key] ?? ""}
+                        value={employee?.[infoBar.key] ?? ""}
                         icon={infoBar.icon}
                     />
                 )}

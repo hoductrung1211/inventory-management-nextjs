@@ -10,11 +10,11 @@ export interface ICategoryResponse {
 }
 
 export const GetAllCategories = () => {
-    return axios.get(apiPrefix);
+    return axios.get<ICategoryResponse[]>(apiPrefix);
 }
 
 export const getCategoryById = (id: number) => {
-    return axios.get(`${apiPrefix}/${id}`);
+    return axios.get<ICategoryResponse>(`${apiPrefix}/${id}`);
 };
 
 export const createCategory = (name: string, description: string, imageUrl: string) => {

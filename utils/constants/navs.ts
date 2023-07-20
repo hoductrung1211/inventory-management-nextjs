@@ -30,7 +30,8 @@ export const adminNavs = [
     {icon: 'truck-field', url: adminUrls.Suppliers, text: "Suppliers"}, 
     {icon: 'warehouse', url: adminUrls.Warehouses, text: "Warehouses"}, 
     {icon: 'building', url: adminUrls.Branches, text: "Branches"}, 
-    {icon: 'users', url: adminUrls.Users, text: "Users"}, 
+    {icon: 'user-tie', url: adminUrls.Employees, text: "Employees"},
+    {icon: 'user', url: adminUrls.Users, text: "Users"},
     {icon: 'chart-simple', url: adminUrls.Users, text: "Reports"}, 
 
 ]

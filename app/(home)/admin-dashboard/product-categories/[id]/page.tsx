@@ -16,37 +16,32 @@ import Table from "@/layouts/Table";
 import InfoBar from "@/components/InfoBar";
 import Image from "next/image";
 import Main from "@/layouts/DashboardMain";
-
-interface IProduct {
-    id: number,
-    name: string,
-    quantity: number,
-}
-
+ 
 export default function Page({
     params
 }: {
     params: {id: string}
 }) {
-    const [showLoading, hideLoading] = useLoadingAnimation();
     const router = useRouter();
-    const categoryId = Number.parseInt(params.id);
+    const [showLoading, hideLoading] = useLoadingAnimation();
     const popup = usePopup();
     const notify = useNotification();
+
     const [category, setCategory] = useState<ICategoryResponse>({
         id: 1,
         name: "",
         description: "",
         imageUrl: "",
     });
-    const [products, setProducts] = useState<IProduct[]>([]);
+    const [products, setProducts] = useState<IProductResponse[]>([]);
+    const categoryId = Number.parseInt(params.id);
  
     useEffect(() => {
-        fetchCategoris();
+        fetchCategory();
         fetchProducts();
     }, []);
 
-    async function fetchCategoris() {
+    async function fetchCategory() {
         try {
             showLoading();
             const {data} = await getCategoryById(categoryId);
@@ -64,14 +59,7 @@ export default function Page({
         try {
             showLoading();
             let {data} = await getAllProducts();
-            data = data.filter((item: IProductResponse) => {
-                if (item.categoryId == categoryId)
-                    return {
-                        id: item.id,
-                        name: item.name,
-                    }
-            });
-            setProducts(data);
+            setProducts(data.filter(prod => prod.categoryId == categoryId));
         }
         catch (error) {
             console.log(error);
@@ -191,7 +179,7 @@ function InfoSection({
 function ProductSection({
     products
 }: {
-    products: IProduct[]
+    products: IProductResponse[]
 }) {
     return (
         <section className="w-3/5 p-3 pt-6 h-full flex flex-col border-2 rounded-r-sm gap-6">

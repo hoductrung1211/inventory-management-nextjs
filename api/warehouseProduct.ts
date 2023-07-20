@@ -9,17 +9,17 @@ export interface IWarehouseProductResponse {
 }
 
 export const getAllWhsProducts = () => {
-    return axios.get(apiPrefix);
+    return axios.get<IWarehouseProductResponse[]>(apiPrefix);
 }
 
 export const getWhsProductsByWarehouse = (warehouseId: number) => {
-    return axios.get(`${apiPrefix}`, {
+    return axios.get<IWarehouseProductResponse[]>(`${apiPrefix}`, {
         params: {
             warehouseId: warehouseId
         }
     });
 }
 
-export const getWarehouseByProdId = (id: number) => {
-    return axios.get(`${apiPrefix}/${id}`);
+export const getWhsProductByProdId = (id: number) => {
+    return axios.get<IWarehouseProductResponse[]>(`${apiPrefix}/${id}`);
 }

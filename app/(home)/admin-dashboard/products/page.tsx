@@ -6,13 +6,13 @@ import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
-import filterByFields, { toIndexSignature } from "@/utils/functions/filterByFields";
+import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export interface IProductData {
-    catName: string | undefined; 
+    catName: string; 
     id: number; 
     name: string; 
     sku: string; 
@@ -24,10 +24,10 @@ export interface IProductData {
 }
 
 export default function Page() {
+    const router = useRouter();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const [products, setProducts] = useState<IProductData[]>([]);
-    const router = useRouter();
-    const [filterProducts, setFilterProducts] = useState<IProductData[]>([]);
+    const [filterProducts, setFilterProducts] = useState<IItem[]>([]);
     const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
@@ -36,24 +36,18 @@ export default function Page() {
 
     async function fetchProducts() {
         try {
-            showLoading();
-            let catData: ICategoryResponse[];
-            let prodData: IProductResponse[];
-
-            const prodRes = await getAllProducts();
-            const catRes = await GetAllCategories();
+            showLoading();  
+            const {data: prodData} = await getAllProducts();
+            const {data: catData} = await GetAllCategories();
             
-            prodData = prodRes.data;
-            catData = catRes.data;
-            
-            const newProducts = prodData.map((prod) => {
+            const newProducts : IProductData[] = prodData.map((prod) => {
                 const cat = catData.find(cat => cat.id == prod.categoryId);
                 return ({
                     ...prod,
-                    catName: cat?.name,
+                    catName: cat?.name ?? "",
                 });
             });
-            setFilterProducts(newProducts);
+            setFilterProducts(toIndexSignature(newProducts));
             setProducts(newProducts);
         } 
         catch (error) {
@@ -78,7 +72,7 @@ export default function Page() {
                 <div className="w-full h-full flex flex-col gap-3">
                     <section className="flex gap-2 h-10">
                         <SearchInput
-                            placeholder="Type branch ID here..."
+                            placeholder="Type product ID here..."
                             handleChange={(e) => {
                                 const newSearchValue = e.target.value;
                                 setSearchValue(newSearchValue);

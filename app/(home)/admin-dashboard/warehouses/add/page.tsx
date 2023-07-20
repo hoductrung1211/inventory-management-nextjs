@@ -29,7 +29,7 @@ export default function Page() {
         fetchBranches();
     }, []);
 
-    async function fetchBranches () {
+    async function fetchBranches() {
         try {
             showLoading();
             const {data: branches} = await getAllBranches();
@@ -39,7 +39,7 @@ export default function Page() {
             }));
             setBranchDataset(newBranchDataset);
             // If there is no branch, set default value to check required constraint
-            setBranchId(newBranchDataset[0].value ?? -1); 
+            setBranchId(newBranchDataset[0].value); 
         }
         catch (error) {
             console.log(error);

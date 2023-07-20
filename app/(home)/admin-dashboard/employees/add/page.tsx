@@ -1,6 +1,6 @@
 'use client';
-import { GetAllCategories, ICategoryResponse, createCategory } from "@/api/category";
-import { createProduct } from "@/api/product";
+import { IBranchResponse, getAllBranches } from "@/api/branch";
+import { ICreateEmployee, IEmployeeResponse, createEmployee } from "@/api/employee";
 import BackwardButton from "@/components/BackwardButton";
 import Title from "@/components/DashboardTitle";
 import DropDown, { IDropdownData } from "@/components/DropDown";
@@ -16,36 +16,38 @@ import { useEffect, useState } from "react";
 
 export default function Page() {
     const router = useRouter();
-    const notify = useNotification();
-    const [fields, setFields] = useState([
-        {label: "Name", value: "", icon: "signature", isRequired: true, errorText: "", type: "text"},
-        {label: "SKU", value: "", icon: "lightbulb", isRequired: true, errorText: "", type: "text"},
-        {label: "Dimensions", value: "", icon: "arrows-left-right", isRequired: false, errorText: "", type: "text"},
-        {label: "Weight", value: "", icon: "weight-hanging", isRequired: false, errorText: "", type: "text"},
-        {label: "Price", value: "", icon: "tag", isRequired: true, errorText: "", type: "number"},
-        {label: "Image URL", value: "", icon: "image", isRequired: false, errorText: "", type: "text"},
-    ]);
-    const [catId, setCatId] = useState(0);
-    const [catDataset, setCatDataset] = useState<IDropdownData[]>([]);
-
     const [showLoading, hideLoading] = useLoadingAnimation();
+    const notify = useNotification();
+
+    const [fields, setFields] = useState([
+        {label: "First Name", value: "", icon: "signature", isRequired: true, errorText: "", type: "text"},
+        {label: "Last Name", value: "", icon: "signature", isRequired: true, errorText: "", type: "text"},
+        {label: "Email", value: "", icon: "envelope", isRequired: true, errorText: "", type: "email"},
+        {label: "Address", value: "", icon: "map-location-dot", isRequired: false, errorText: "", type: "text"},
+        {label: "Date of birth", value: "", icon: "calendar", isRequired: false, errorText: "", type: "date"},
+        {label: "Salary", value: "", icon: "money-check-dollar", isRequired: true, errorText: "", type: "number"},
+        {label: "Image URL", value: "", icon: "image", isRequired: false, errorText: "", type: "text"},
+        {label: "Manager ID", value: "", icon: "id-card", isRequired: false, errorText: "", type: "number"},
+    ]);
+    const [branchId, setBranchId] = useState(-1);
+    const [branchDataset, setBranchDataset] = useState<IDropdownData[]>([]);
+    const [gender, setGender] = useState(false);
 
     useEffect(() => {
-        fetchCategories();
+        fetchBranches();
     }, []);
 
-    async function fetchCategories() {
+    async function fetchBranches () {
         try {
             showLoading();
-            const { data: cats } = await GetAllCategories();
-
-            setCatDataset(cats.map((cat: ICategoryResponse) => ({
-                text: cat.name,
-                value: cat.id,
-            })));
-
-            setCatId(cats[0].id ?? -1); 
-
+            const {data: branches} = await getAllBranches();
+            const newBranchDataset = branches.map((branch: IBranchResponse) => ({
+                text: branch.name,
+                value: branch.id,
+            }));
+            setBranchDataset(newBranchDataset);
+            // If there is no branch, set default value to check required constraint
+            setBranchId(newBranchDataset[0].value ?? -1); 
         }
         catch (error) {
             console.log(error);
@@ -55,21 +57,39 @@ export default function Page() {
         }
     }
 
-    const requestCreateProduct = async () => {
+    const requestCreateBranch = async () => {
         const checked = checkConstraint();
         if (!checked) {
-            notify("Create a category failed", "error");
+            notify("Create a warehouse failed!", "error");
             return;
         }
+
         try {
-            await createProduct(fields[0].value, fields[1].value, catId + "", fields[2].value, fields[3].value, fields[4].value, fields[5].value);
+            showLoading();
+            const data : ICreateEmployee = {
+                branchId, 
+                firstName: fields[0].value.trim(), 
+                lastName: fields[1].value.trim(), 
+                email: fields[2].value.trim(),
+                address: fields[3].value.trim(),
+                gender: gender,
+            }
+            console.log("--- --- " + fields[4]);
+            // if (fields[4].value.trim()) data.dateOfBirth = fields[4].value.trim();
+            const salary = Number.parseFloat(fields[5].value.trim());
+            if (!Number.isNaN(salary)) data.salary = salary;
+            if (fields[6].value.trim()) data.imageUrl = fields[6].value.trim();
+            const managerId = Number.parseInt(fields[7].value.trim());
+            if (!Number.isNaN(managerId)) data.managerId = managerId;
+
+            await createEmployee(data);
             router.push("./");
-            notify("Create a category successfully", "success");
+            notify("Create a warehouse successfully!", "success");
         }
         catch (error) {
             console.log(error);
-            notify("Create a category failed", "error");
-        } 
+            notify("Create a warehouse failed!", "error");
+        }
     }
 
     function checkConstraint() {
@@ -78,19 +98,20 @@ export default function Page() {
 
         fields.forEach(field => {
             const checkErrorValue = field.isRequired && !field.value;
+
             if (checkErrorValue) {
                 errors.push("Cannot blank this field");
                 isError = true;
             }
             else errors.push("");
-        });
+        })
 
         setFields(fields.map((field, idx) => ({
             ...field,
             errorText: errors[idx],
         })));
         return !isError;
-    } 
+    }
 
     return (
         <section className="w-full flex flex-col">
@@ -101,31 +122,34 @@ export default function Page() {
                         text="Save"
                         color={Color.WHITE}
                         bgColor={Color.GREEN} 
-                        actionHandler={requestCreateProduct}
+                        actionHandler={requestCreateBranch}
                     />
                 </div>
             </Header>
             <Main>
                 <div className="w-[480px] h-full flex flex-col gap-8 p-5 mx-auto border-2 rounded-md shadow-md">
                     <Title
-                        text="Create a product"
+                        text="Create a warehouse"
                         icon="plus"
                         color={Color.GREEN}
-                    />
-                    <div className="relative h-40">
-                        <Image
-                            className="object-contain"
-                            src="/images/product.jpg"
-                            alt="Building image"
-                            fill
-                        />
-                    </div>
+                    /> 
                     <form className="flex flex-col gap-4">
                         <DropDown
                             label="Branch"
                             icon="building"
-                            dataset={catDataset}
-                            handleChange={(e) => setCatId(Number.parseInt(e.target.value))}
+                            dataset={branchDataset}
+                            value={branchId}
+                            handleChange={(e) => setBranchId(Number.parseInt(e.target.value))}
+                        /> 
+                        <DropDown
+                            label="Gender"
+                            icon="venus-mars"
+                            dataset={[
+                                {text: "Male", value: "true"},
+                                {text: "Female", value: "false"},
+                            ]}
+                            value={gender + ""}
+                            handleChange={(e) => setGender(e.target.value == "false" ? false : true)}
                         /> 
                         {fields.map((field, idx) => 
                             <EditText

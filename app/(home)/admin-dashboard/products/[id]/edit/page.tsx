@@ -29,7 +29,7 @@ export default function Page({
         {label: "SKU", value: "", icon: "lightbulb", isRequired: true, errorText: "", type: "text"},
         {label: "Dimensions", value: "", icon: "arrows-left-right", isRequired: false, errorText: "", type: "text"},
         {label: "Weight", value: "", icon: "weight-hanging", isRequired: false, errorText: "", type: "text"},
-        {label: "Price", value: "", icon: "tag", isRequired: true, errorText: "", type: "text"},
+        {label: "Price", value: "", icon: "tag", isRequired: true, errorText: "", type: "number"},
         {label: "Image URL", value: "", icon: "image", isRequired: false, errorText: "", type: "text"},
     ]);
     const [catDataset, setCatDataset] = useState<IDropdownData[]>([]);
@@ -39,12 +39,13 @@ export default function Page({
         fetchProduct(); 
         fetchCategories();
     }, []);
+
     async function fetchCategories() {
         try {
             showLoading();
-            const { data: cats } = await GetAllCategories();
+            const { data } = await GetAllCategories();
 
-            setCatDataset(cats.map((cat: ICategoryResponse) => ({
+            setCatDataset(data.map((cat: ICategoryResponse) => ({
                 text: cat.name,
                 value: cat.id,
             })));
@@ -67,7 +68,7 @@ export default function Page({
                 {...fields[1], value: data.sku},
                 {...fields[2], value: data.dimensions},
                 {...fields[3], value: data.weight},
-                {...fields[4], value: data.tempPrice},
+                {...fields[4], value: data.tempPrice + ""},
                 {...fields[5], value: data.imageUrl},
             ]);
 
@@ -149,7 +150,7 @@ export default function Page({
                     </section>
                     <section className="w-1/2 border-2 flex flex-col p-5 rounded-md">
                         <Title
-                            text="Edit product category information"
+                            text="Edit product information"
                             icon="pencil"
                         />
                         <form className="mt-10 mx-auto w-[480px] flex flex-col gap-4">
@@ -166,6 +167,7 @@ export default function Page({
                                     icon={field.icon}
                                     label={field.label}
                                     value={field.value}
+                                    type={field.type}
                                     handleChange={(e) => {
                                         setFields([
                                             ...fields.slice(0, idx),

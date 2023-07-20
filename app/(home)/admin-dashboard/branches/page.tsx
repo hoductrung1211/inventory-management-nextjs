@@ -27,7 +27,7 @@ export default function Page() {
             showLoading();
             const {data} = await getAllBranches();
             setBranches(data);
-            setFilterBranches(data);
+            setFilterBranches(toIndexSignature(data));
         } 
         catch (error) {
             console.log(error);

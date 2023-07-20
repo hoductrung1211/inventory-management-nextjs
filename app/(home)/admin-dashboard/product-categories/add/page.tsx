@@ -1,5 +1,5 @@
 'use client';
-import { createCategory } from "@/api/category";
+import { createCategory, updateCategory } from "@/api/category";
 import BackwardButton from "@/components/BackwardButton";
 import Title from "@/components/DashboardTitle";
 import { IDropdownData } from "@/components/DropDown";
@@ -15,13 +15,14 @@ import { useEffect, useState } from "react";
 
 export default function Page() {
     const router = useRouter();
+    const [showLoading, hideLoading] = useLoadingAnimation();
     const notify = useNotification();
+
     const [fields, setFields] = useState([
         {label: "Name", value: "", icon: "signature", isRequired: true, errorText: "", type: "text"},
         {label: "Description", value: "", icon: "quote-left", isRequired: false, errorText: "", type: "text"},
         {label: "Image URL", value: "", icon: "image", isRequired: false, errorText: "", type: "text"},
     ]);
-    const [showLoading, hideLoading] = useLoadingAnimation();
 
     useEffect(() => {
     }, []);
@@ -33,7 +34,8 @@ export default function Page() {
             return;
         }
         try {
-            // await (fields[0].value, fields[1].value, fields[2].value);
+            showLoading();
+            await createCategory(fields[0].value, fields[1].value, fields[2].value);
             router.push("./");
             notify("Create a category successfully", "success");
         }
@@ -41,6 +43,9 @@ export default function Page() {
             console.log(error);
             notify("Create a category failed", "error");
         } 
+        finally {
+            hideLoading();
+        }
     }
 
     function checkConstraint() {

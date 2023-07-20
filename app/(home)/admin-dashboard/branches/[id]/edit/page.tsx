@@ -36,8 +36,8 @@ export default function Page({
             showLoading();
             const {data} = await getBranchById(branchId);
             setFields([
-                {...fields[0], value: data.name},
-                {...fields[1], value: data.address},
+                {...fields[0], value: data.name ?? ""},
+                {...fields[1], value: data.address ?? ""},
             ])
         }
         catch (error) {
