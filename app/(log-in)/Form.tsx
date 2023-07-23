@@ -27,7 +27,7 @@ export default function Form({
                         alt="welcome illustration"
                     />                        
                 </div>
-                <h2 className="text-xl font-extrabold text-center">{title}</h2>
+                <h2 className="text-xl font-extrabold text-center text-lime-400">{title}</h2>
             </section>
 
             <form className="relative h-full flex flex-col gap-3">
@@ -80,7 +80,7 @@ export function Button({
     text: string,
 }) {
     return (
-        <button className="absolute left-0 right-0 bottom-0 h-10 rounded-md bg-blue-400 text-white font-bold">
+        <button className="absolute left-0 right-0 bottom-0 h-10 rounded-md bg-lime-400 text-white font-bold">
             {text}
         </button>
     )

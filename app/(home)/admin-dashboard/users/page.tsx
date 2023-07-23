@@ -92,7 +92,7 @@ export default function Page() {
                         columns={[
                             {id: 1, text: "Username", key: "username", linkRoot: "users/"},
                             {id: 2, text: "Employee Id", key: "employeeId", linkRoot: "employees/"},
-                            {id: 3, text: "Employee Id", key: "employee"},
+                            {id: 3, text: "Employee", key: "employee"},
                             {id: 4, text: "Role", key: "role"},
                         ]}
                         dataSet={filterdUsers}

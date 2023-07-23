@@ -10,7 +10,7 @@ export default function Template({
 }) {
     const [_, setActiveNav] = useActiveNav();
     useEffect(() => {
-        setActiveNav("Suppliers");
+        setActiveNav("Partners");
     }, []);
     
     return ( 

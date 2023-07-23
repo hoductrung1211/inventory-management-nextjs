@@ -156,7 +156,7 @@ export default function Page({
                         <form className="mt-10 mx-auto w-[480px] flex flex-col gap-4">
                             <InfoBar label="Id" icon="hashtag" value={productId} />
                             <DropDown
-                                label="Branch"
+                                label="Category"
                                 icon="building"
                                 dataset={catDataset}
                                 handleChange={(e) => setCatId(Number.parseInt(e.target.value))}

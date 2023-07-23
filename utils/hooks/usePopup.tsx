@@ -2,7 +2,6 @@
 import { createContext, useContext, useState } from "react"
 
 const PopupContext = createContext<[(show: boolean) => void, (popup: React.ReactNode) => void]>([() => {}, () => {}]);
-
 export default function usePopup() {
     const [setIsShow, setPopup] = useContext(PopupContext);
     

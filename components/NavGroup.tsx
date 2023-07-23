@@ -47,7 +47,7 @@ function LinkNav({
     handleChangeNav: (text: string) => void
 }) { 
     let navClassName = "w-full px-2.5 h-10 flex items-center gap-2 rounded-md ";
-    isActive ? navClassName += ' bg-blue-400 text-white font-semibold' : navClassName += ' hover:bg-gray-100';
+    isActive ? navClassName += ' bg-lime-400 text-slate-700 font-semibold' : navClassName += ' hover:bg-lime-400 hover:text-slate-700';
 
     return (
         <Link 
@@ -75,7 +75,7 @@ export function FuncNav({
     text: string,
     color?: string,
 }) {
-    let navClassName = " w-full px-2.5 h-10 flex items-center gap-2 rounded-md hover:bg-gray-100 cursor-pointer " + color;
+    let navClassName = " w-full px-2.5 h-10 flex items-center gap-2 rounded-md hover:bg-lime-400 cursor-pointer " + color;
 
     return (
         <div className={navClassName} onClick={func}>
