@@ -66,11 +66,11 @@ export default function Page() {
                     </section>
                     <Table
                         columns={[
-                            {id: 1, text: "Id", key: "id", linkRoot: "product-categories/"},
+                            {id: 1, text: "Id", key: "id", linkRoot: "partners/"},
                             {id: 2, text: "Name", key: "name"},
                             {id: 3, text: "Phone number", key: "phoneNumber"}, 
-                            {id: 4, text: "Phone number", key: "phoneNumber"}, 
-                            {id: 5, text: "Address", key: "email"}, 
+                            {id: 4, text: "Email", key: "email"}, 
+                            {id: 5, text: "Address", key: "address"}, 
                             {id: 6, text: "Description", key: "detailDescription"}, 
                         ]}
                         dataSet={filterdPartners}

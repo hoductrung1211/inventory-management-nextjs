@@ -15,7 +15,7 @@ export const getAllPartners = () => {
     return axios.get<IPartnerResponse[]>(apiPrefix);
 }
 
-export const getPartnerStateById = (id: number) => {
+export const getPartnerById = (id: number) => {
     return axios.get<IPartnerResponse>(`${apiPrefix}/${id}`)
 }
 

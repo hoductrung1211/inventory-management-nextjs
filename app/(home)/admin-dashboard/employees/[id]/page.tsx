@@ -1,6 +1,5 @@
 'use client';
-import { getAllBranches, getBranchById } from "@/api/branch";
-import { deleteWarehouse, getWarehouseById } from "@/api/warehouse";
+import { getAllBranches } from "@/api/branch";
 import BackwardButton from "@/components/BackwardButton";
 import Title from "@/components/DashboardTitle";
 import Header, { Button } from "@/layouts/DashboardHeader";
@@ -15,7 +14,7 @@ import Table from "@/layouts/Table";
 import usePopup from "@/utils/hooks/usePopup";
 import Popup from "@/components/Popup";
 import useNotification from "@/utils/hooks/useNotification";
-import { deleteEmployee, getAllEmployees, getEmployeeById } from "@/api/employee";
+import { deleteEmployee, getEmployeeById } from "@/api/employee";
 
 interface IEmployee {
     id: number,
