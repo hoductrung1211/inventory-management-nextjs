@@ -3,8 +3,10 @@ import Link from "next/link";
 export default function Table ({
     columns,
     dataSet,
+    handleRowClick,
 }: {
-    columns: {id: number, text: string, key: string, icon?: string, linkRoot?: string}[],
+    handleRowClick?: (data: any) => void,
+    columns: {id: number, text: string, key: string, icon?: string, linkRoot?: string, transFunc?: (val: any) => string,}[], 
     dataSet: any[]
 }) { 
     const colsCount = columns.length;
@@ -18,13 +20,21 @@ export default function Table ({
             {dataSet.map(row => (
                 <div 
                     key={row.id}
+                    onClick={() => {
+                        if (handleRowClick) {
+                            handleRowClick(row.id);
+                        }
+                    }}
                     className={`grid grid-cols-${colsCount} min-h-[48px] shrink-0 odd:bg-gray-50 border-2 border-transparent hover:border-gray-300 hover:bg-[#ecf0f1]`}>
                     {columns.map(col => (
-                        <div key={col.key + col.text} className="col-span-1 grid place-items-center text-center">
-                        {col.linkRoot
-                            ? <Link className="w-full h-full grid place-items-center hover:bg-blue-100 text-blue-400 underline" href={col.linkRoot + row[col.key]}>{row[col.key]}</Link>
-                            : row[col.key]
-                        }
+                        <div 
+                            key={col.key + col.text} 
+                            className="col-span-1 grid place-items-center text-center"
+                        >
+                            {col.linkRoot
+                                ? <Link className="w-full h-full grid place-items-center hover:bg-blue-100 text-blue-400 underline" href={col.linkRoot + row[col.key]}>{row[col.key]}</Link>
+                                : col?.transFunc ? col?.transFunc(row[col.key]) : row[col.key]
+                            }
                         </div>
                     ))}
                 </div>

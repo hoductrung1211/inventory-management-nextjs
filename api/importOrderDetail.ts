@@ -7,7 +7,12 @@ export interface IImportOrderDetailResponse {
     productId: number,
     quantity: number,
     price: number,
-    warehouseId: number,
+}
+
+export interface ICreateImportOrderDetail {
+    productId: number,
+    quantity: number,
+    price: number,
 }
 
 export const getAllBranches = () => {

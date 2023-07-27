@@ -8,6 +8,7 @@ import ImageGroup from "../ImageGroup";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import useNotification from "@/utils/hooks/useNotification";
 import { login } from "@/api/auth";
+import axios, { AxiosError } from "axios";
 
 export default function Page() { 
     const router = useRouter();
@@ -31,8 +32,14 @@ export default function Page() {
             localStorage.setItem("token", data);
             router.push(adminUrls.Home);
         }
+        // catch(error) {
+        //     console.log(error);
+        //     notify("Login failed!", "error");
+        // }
         catch(error) {
-            console.log(error);
+            if (axios.isAxiosError(error)) {
+                console.log(error.response?.data);
+            }
         }
         finally {
             hideLoading();

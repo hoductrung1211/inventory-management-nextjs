@@ -1,11 +1,20 @@
 import axios from "./axios.config";
+import { ICreateImportOrderDetail } from "./importOrderDetail";
 
 const apiPrefix = "/importOrders";
 
 export interface IImportOrderResponse {
     id: number,
     partnerId: number,
-    isCanceled: boolean, 
+    warehouseId: number,
+    trackingStateId: number,
+    lastUpdatedTime: Date,
+}
+
+export interface ICreateImportOrder {
+    partnerId: number,
+    warehouseId: number,
+    importOrderDetails: ICreateImportOrderDetail[],
 }
 
 export const getAllImportOrder = () => {
@@ -16,11 +25,8 @@ export const getImportOrderById = (id: number) => {
     return axios.get<IImportOrderResponse>(`${apiPrefix}/${id}`)
 }
 
-export const createImportOrder = (partnerId: number) => {
-    const formData = new FormData();
-    formData.append("partnerId", partnerId + "");
-
-    return axios.post(`${apiPrefix}`, formData);
+export const createImportOrder = (data: ICreateImportOrder) => {
+    return axios.post(`${apiPrefix}`, data);
 }
 
 export const updateImportOrder = (id: number, isCanceled: boolean) => { 

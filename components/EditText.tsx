@@ -21,7 +21,7 @@ export default function EditText({
     const [isError, setIsError] = useState(errorText ? true : false);
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col bg-white">
             <label className={isError ? classNameError : className}>
                 <span className="w-12"><Icon name={icon} size="xl" /></span>
                 <span className="w-40 font-bold">{label}</span>

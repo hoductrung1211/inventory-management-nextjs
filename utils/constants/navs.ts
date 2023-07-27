@@ -24,10 +24,11 @@ export const staffNavs = [
 
 export const adminNavs = [
     {icon: 'house', url: adminUrls.Home, text: "Home"}, 
+    {icon: 'dolly', url: adminUrls.Imports, text: "Imports"}, 
+    {icon: 'truck-fast', url: adminUrls.Exports, text: "Exports"}, 
     {icon: 'box-open', url: adminUrls.Products, text: "Products"}, 
     {icon: 'boxes-stacked', url: adminUrls.ProductCategories, text: "Product Categories"}, 
     {icon: 'handshake-angle', url: adminUrls.Partners, text: "Partners"}, 
-    // {icon: 'truck-field', url: adminUrls.Suppliers, text: "Suppliers"}, 
     {icon: 'warehouse', url: adminUrls.Warehouses, text: "Warehouses"}, 
     {icon: 'building', url: adminUrls.Branches, text: "Branches"}, 
     {icon: 'user-tie', url: adminUrls.Employees, text: "Employees"},
