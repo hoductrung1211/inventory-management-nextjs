@@ -1,5 +1,5 @@
 'use client';
-import { deletePartner, getPartnerById } from "@/api/partner";
+import { deleteSupplier, getSupplierById } from "@/api/supplier";
 import BackwardButton from "@/components/BackwardButton";
 import Title from "@/components/DashboardTitle";
 import InfoBar from "@/components/InfoBar";
@@ -13,7 +13,7 @@ import usePopup from "@/utils/hooks/usePopup";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export interface IPartner {
+export interface ISupplier {
     id: number,
     name: string,
     phoneNumber: string,
@@ -32,18 +32,18 @@ export default function Page({
     const [showLoading, hideLoading] = useLoadingAnimation();
     const router = useRouter();
 
-    const partnerId = Number.parseInt(params.id);
-    const [partner, setPartner] = useState<IPartner>();
+    const supplierId = Number.parseInt(params.id);
+    const [supplier, setSupplier] = useState<ISupplier>();
 
     useEffect(() => {
-        fetchPartner();
+        fetchSupplier();
     }, []);
 
-    async function fetchPartner() {
+    async function fetchSupplier() {
         try {
             showLoading();
-            const {data} = await getPartnerById(partnerId);
-            setPartner({
+            const {data} = await getSupplierById(supplierId);
+            setSupplier({
                 id: data.id,
                 name: data.name,
                 phoneNumber: data.phoneNumber,
@@ -60,31 +60,31 @@ export default function Page({
         }
     }
 
-    async function deleteThisPartner() {
+    async function deleteThisSupplier() {
         try {
             showLoading();
-            await deletePartner(partnerId);
+            await deleteSupplier(supplierId);
             router.push("./");
-            notify("Delete partner successfully!", "success");
+            notify("Delete supplier successfully!", "success");
         }
         catch (error) {
             console.log(error);
-            notify("Delete partner failed!", "error");
+            notify("Delete supplier failed!", "error");
         }
         finally {
             hideLoading();
         }
     }
 
-    const deletePartnerPopup = 
-        <Popup text="This partner will be deleted, you're sure?">
+    const deleteSupplierPopup = 
+        <Popup text="This supplier will be deleted, you're sure?">
             <Button
                 text="Delete"
                 color={Color.WHITE}
                 bgColor={Color.RED}
                 actionHandler={() => {
                     popup.hide();
-                    deleteThisPartner();
+                    deleteThisSupplier();
                 }}
             />
             <Button
@@ -107,23 +107,23 @@ export default function Page({
                         text="Edit"
                         color={Color.WHITE}
                         bgColor={Color.ORANGE} 
-                        actionHandler={() => router.push(`${partnerId}/edit`)}
+                        actionHandler={() => router.push(`${supplierId}/edit`)}
                     />
                     <Button
                         text="Delete"
                         color={Color.WHITE}
                         bgColor={Color.RED} 
                         actionHandler={() => {
-                            popup.show(deletePartnerPopup);
+                            popup.show(deleteSupplierPopup);
                         }}
                     />
                 </div>
             </Header>
             <Main>
                 <div className="w-full h-full flex gap-3">
-                    {partner && 
+                    {supplier && 
                         <InfoSection
-                            partner={partner}
+                            supplier={supplier}
                         />}
                     </div>
                     {/* <ProductSection products={products} /> */}
@@ -133,9 +133,9 @@ export default function Page({
 }
 
 function InfoSection({
-    partner
+    supplier
 }: {
-    partner: IPartner
+    supplier: ISupplier
 }) {
     const inforBars: 
         {
@@ -163,7 +163,7 @@ function InfoSection({
                     <InfoBar
                         key={infoBar.label}
                         label={infoBar.label}
-                        value={partner?.[infoBar.key] ?? ""}
+                        value={supplier?.[infoBar.key] ?? ""}
                         icon={infoBar.icon}
                     />
                 )}

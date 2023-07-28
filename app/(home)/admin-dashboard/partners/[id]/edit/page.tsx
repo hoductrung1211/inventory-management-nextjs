@@ -11,7 +11,7 @@ import Title from "@/components/DashboardTitle";
 import InfoBar from "@/components/InfoBar";
 import EditText from "@/components/EditText";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation"; 
-import { getPartnerById, updatePartner } from "@/api/partner";
+import { getSupplierById, updateSupplier } from "@/api/supplier";
 
 export default function Page({
     params
@@ -29,16 +29,16 @@ export default function Page({
         {label: "Address", value: "", icon: "map-location-dot", isRequired: false, errorText: "", type: "text"},
         {label: "Description", value: "", icon: "quote-left", isRequired: false, errorText: "", type: "text"},
     ]);
-    const partnerId = Number.parseInt(params.id);
+    const supplierId = Number.parseInt(params.id);
     
     useEffect(() => {
-        fetchPartner(); 
+        fetchSupplier(); 
     }, []);
 
-    async function fetchPartner() {
+    async function fetchSupplier() {
         try {
             showLoading();
-            const {data} = await getPartnerById(partnerId);
+            const {data} = await getSupplierById(supplierId);
             setFields([
                 {...fields[0], value: data.name},
                 {...fields[1], value: data.phoneNumber},
@@ -63,7 +63,7 @@ export default function Page({
         }
         try {
             showLoading();
-            await updatePartner(partnerId, {
+            await updateSupplier(supplierId, {
                 name: fields[0].value.trim(),
                 phoneNumber: fields[1].value.trim(),
                 email: fields[2].value.trim(),
@@ -127,7 +127,7 @@ export default function Page({
                             icon="pencil"
                         />
                         <form className="mt-10 mx-auto w-[480px] flex flex-col gap-4">
-                            <InfoBar label="Id" icon="hashtag" value={partnerId} />
+                            <InfoBar label="Id" icon="hashtag" value={supplierId} />
                            
                             {fields.map((field, idx) => 
                                 <EditText

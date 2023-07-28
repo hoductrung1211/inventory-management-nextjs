@@ -28,7 +28,7 @@ export const adminNavs = [
     {icon: 'truck-fast', url: adminUrls.Exports, text: "Exports"}, 
     {icon: 'box-open', url: adminUrls.Products, text: "Products"}, 
     {icon: 'boxes-stacked', url: adminUrls.ProductCategories, text: "Product Categories"}, 
-    {icon: 'handshake-angle', url: adminUrls.Partners, text: "Partners"}, 
+    {icon: 'handshake-angle', url: adminUrls.Suppliers, text: "Supplier"}, 
     {icon: 'warehouse', url: adminUrls.Warehouses, text: "Warehouses"}, 
     {icon: 'building', url: adminUrls.Branches, text: "Branches"}, 
     {icon: 'user-tie', url: adminUrls.Employees, text: "Employees"},

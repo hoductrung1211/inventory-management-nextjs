@@ -5,14 +5,14 @@ const apiPrefix = "/importOrders";
 
 export interface IImportOrderResponse {
     id: number,
-    partnerId: number,
+    supplierId: number,
     warehouseId: number,
     trackingStateId: number,
     lastUpdatedTime: Date,
 }
 
 export interface ICreateImportOrder {
-    partnerId: number,
+    supplierId: number,
     warehouseId: number,
     importOrderDetails: ICreateImportOrderDetail[],
 }

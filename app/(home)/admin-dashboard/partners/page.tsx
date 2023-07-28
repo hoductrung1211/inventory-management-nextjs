@@ -1,5 +1,5 @@
 'use client';
-import { IPartnerResponse, getAllPartners } from "@/api/partner";
+import { ISupplierResponse, getAllSuppliers } from "@/api/supplier";
 import SearchInput from "@/components/SearchInput";
 import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
@@ -13,20 +13,20 @@ import { useEffect, useState } from "react";
 export default function Page() {
     const router = useRouter();
     const [showLoading, hideLoading] = useLoadingAnimation();
-    const [partners, setPartners] = useState<IPartnerResponse[]>([]);
-    const [filterdPartners, setFilterdPartners] = useState<IItem[]>([]);
+    const [suppliers, setSuppliers] = useState<ISupplierResponse[]>([]);
+    const [filterdSuppliers, setFilterdSuppliers] = useState<IItem[]>([]);
     const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
-        fetchPartners();
+        fetchSuppliers();
     }, []);
 
-    async function fetchPartners() {
+    async function fetchSuppliers() {
         try {
             showLoading();
-            const {data} = await getAllPartners();
-            setPartners(data);
-            setFilterdPartners(toIndexSignature(data));
+            const {data} = await getAllSuppliers();
+            setSuppliers(data);
+            setFilterdSuppliers(toIndexSignature(data));
         } 
         catch (error) {
             console.log(error);
@@ -40,40 +40,40 @@ export default function Page() {
         <section className="w-full flex flex-col">
             <Header>
                 <Button 
-                    text="Add Partner"
+                    text="Add Supplier"
                     color={Color.WHITE}
                     bgColor={Color.GREEN} 
-                    actionHandler={() => router.push("partners/add")}
+                    actionHandler={() => router.push("suppliers/add")}
                 />
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
                     <section className="flex gap-2 h-10">
                         <SearchInput
-                            placeholder="Type partner ID here..."
+                            placeholder="Type supplier ID here..."
                             value={searchValue}
                             handleChange={e => {
                                 const newSearchValue = e.target.value;
                                 setSearchValue(newSearchValue);
                                 const filterList = filterByFields(
-                                        toIndexSignature(partners), 
+                                        toIndexSignature(suppliers), 
                                         newSearchValue.trim(), 
                                         ["id", "name"]
                                     );
-                                setFilterdPartners(filterList);
+                                setFilterdSuppliers(filterList);
                             }}
                         />
                     </section>
                     <Table
                         columns={[
-                            {id: 1, text: "Id", key: "id", linkRoot: "partners/"},
+                            {id: 1, text: "Id", key: "id", linkRoot: "suppliers/"},
                             {id: 2, text: "Name", key: "name"},
                             {id: 3, text: "Phone number", key: "phoneNumber"}, 
                             {id: 4, text: "Email", key: "email"}, 
                             {id: 5, text: "Address", key: "address"}, 
                             {id: 6, text: "Description", key: "detailDescription"}, 
                         ]}
-                        dataSet={filterdPartners}
+                        dataSet={filterdSuppliers}
                     />
                 </div>
             </Main>

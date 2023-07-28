@@ -1,8 +1,8 @@
 import axios from "./axios.config";
 
-const apiPrefix = "/partners";
+const apiPrefix = "/suppliers";
 
-export interface IPartnerResponse {
+export interface ISupplierResponse {
     id: number,
     name: string,
     phoneNumber: string,
@@ -11,15 +11,15 @@ export interface IPartnerResponse {
     detailDescription?: string,
 }
 
-export const getAllPartners = () => {
-    return axios.get<IPartnerResponse[]>(apiPrefix);
+export const getAllSuppliers = () => {
+    return axios.get<ISupplierResponse[]>(apiPrefix);
 }
 
-export const getPartnerById = (id: number) => {
-    return axios.get<IPartnerResponse>(`${apiPrefix}/${id}`)
+export const getSupplierById = (id: number) => {
+    return axios.get<ISupplierResponse>(`${apiPrefix}/${id}`)
 }
 
-export const createPartner = (data: {
+export const createSupplier = (data: {
     name: string,
     phoneNumber: string,
     email: string,
@@ -29,11 +29,11 @@ export const createPartner = (data: {
     return axios.post(`${apiPrefix}`, data);
 }
 
-export const deletePartner = (id: number) => {
+export const deleteSupplier = (id: number) => {
     return axios.delete(`${apiPrefix}/${id}`);
 }
 
-export const updatePartner = (id: number, data: {
+export const updateSupplier = (id: number, data: {
     name: string,
     phoneNumber: string,
     email: string,

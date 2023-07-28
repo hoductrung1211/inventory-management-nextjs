@@ -15,7 +15,6 @@ export interface ICreateImportOrderDetail {
     price: number,
 }
 
-export const getAllBranches = () => {
-    return axios.get<IImportOrderDetailResponse[]>(apiPrefix);
+export const getImportOrdersDetailById = (orderId: number) => {
+    return axios.get<IImportOrderDetailResponse[]>(`${apiPrefix}/${orderId}`);
 }
- 

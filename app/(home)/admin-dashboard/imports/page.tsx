@@ -2,7 +2,7 @@
 import { IBranchResponse, getAllBranches } from "@/api/branch";
 import { IEmployeeResponse, getAllEmployees } from "@/api/employee";
 import { IImportOrderResponse, getAllImportOrder } from "@/api/importOrder";
-import { getAllPartners } from "@/api/partner";
+import { getAllSuppliers } from "@/api/supplier";
 import { getAllTrackingStates } from "@/api/trackingState";
 import { IWarehouseResponse, getAllWarehouses } from "@/api/warehouse";
 import SearchInput from "@/components/SearchInput";
@@ -15,12 +15,12 @@ import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface IImportOrderData {
+export interface IImportOrderData {
     id: number,
-    partnerName: string,
+    supplierName: string,
     warehouseName: string,
     trackingStateName: string,
-    lastUpdatedTime: Date,
+    lastUpdatedTime: string,
 }
 
 export default function Page() {
@@ -39,20 +39,21 @@ export default function Page() {
         try {
             showLoading(); 
             const {data} = await getAllImportOrder();
-            const {data: partners} = await getAllPartners();
+            const {data: suppliers} = await getAllSuppliers();
             const {data: warehouses} = await getAllWarehouses();
             const {data: trackingStates} = await getAllTrackingStates();
 
             const newData = data.map(importOrder => {
-                const partner = partners.find(p => p.id === importOrder.partnerId);
+                const supplier = suppliers.find(p => p.id === importOrder.supplierId);
                 const warehouse = warehouses.find(whs => whs.id === importOrder.warehouseId);
                 const trackingState = trackingStates.find(ts => ts.id === importOrder.trackingStateId);
 
                 return ({
                     ...importOrder,
-                    partnerName: partner?.name + "",
+                    supplierName: supplier?.name + "",
                     warehouseName: warehouse?.name + "",
                     trackingStateName: trackingState?.name + "",
+                    lastUpdatedTime: new Date(importOrder.lastUpdatedTime).toLocaleString()
                 })
             })
             setImports(newData);
@@ -88,7 +89,7 @@ export default function Page() {
                                 const filterList = filterByFields(
                                         toIndexSignature(imports), 
                                         newSearchValue.trim(), 
-                                        ["id", "partnerName"]
+                                        ["id", "supplierName"]
                                     );
                                 setFilteredImports(filterList);
                             }}
@@ -97,9 +98,10 @@ export default function Page() {
                     <Table
                         columns={[
                             {id: 1, text: "Id", key: "id", linkRoot: "imports/"},
-                            {id: 2, text: "Partner Name", key: "partnerName"},
+                            {id: 2, text: "Supplier Name", key: "supplierName"},
                             {id: 3, text: "Warehouse Name", key: "warehouseName"},
-                            {id: 6, text: "Last updated", key: "lastUpdatedTime", transFunc: (datetime: string) => new Date(datetime).toLocaleString()},
+                            {id: 4, text: "State", key: "trackingStateName"},
+                            {id: 6, text: "Last updated", key: "lastUpdatedTime"},
                         ]}
                         dataSet={filterdImports}
                     />

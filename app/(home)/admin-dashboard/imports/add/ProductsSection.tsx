@@ -65,7 +65,7 @@ export default function ProductsSection({
     }
 
     return (
-        <div className="flex flex-col gap-2 h-full rounded-md overflow-hidden">
+        <div className="flex flex-col gap-2 h-full max-h-[580px] rounded-md overflow-hidden">
             <Header />
             <DetailsTable 
                 details={details}

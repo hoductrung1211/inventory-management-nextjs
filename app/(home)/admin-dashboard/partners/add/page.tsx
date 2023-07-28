@@ -1,5 +1,5 @@
 'use client';
-import { createPartner } from "@/api/partner";
+import { createSupplier } from "@/api/supplier";
 import BackwardButton from "@/components/BackwardButton";
 import Title from "@/components/DashboardTitle";
 import EditText from "@/components/EditText";
@@ -27,15 +27,15 @@ export default function Page() {
     useEffect(() => {
     }, []);
 
-    const requestCreatePartner = async () => {
+    const requestCreateSupplier = async () => {
         const checked = checkConstraint();
         if (!checked) {
-            notify("Create a partner information failed", "error");
+            notify("Create a supplier information failed", "error");
             return;
         }
         try {
             showLoading();
-            await createPartner({
+            await createSupplier({
                 name: fields[0].value,
                 phoneNumber: fields[1].value,
                 email: fields[2].value,
@@ -43,11 +43,11 @@ export default function Page() {
                 detailDescription: fields[4].value,
             });
             router.push("./");
-            notify("Create a partner information successfully", "success");
+            notify("Create a supplier information successfully", "success");
         }
         catch (error) {
             console.log(error);
-            notify("Create a partner information failed", "error");
+            notify("Create a supplier information failed", "error");
         } 
         finally {
             hideLoading();
@@ -83,14 +83,14 @@ export default function Page() {
                         text="Save"
                         color={Color.WHITE}
                         bgColor={Color.GREEN} 
-                        actionHandler={requestCreatePartner}
+                        actionHandler={requestCreateSupplier}
                     />
                 </div>
             </Header>
             <Main>
                 <div className="w-[480px] h-full flex flex-col gap-8 p-5 mx-auto border-2 rounded-md shadow-md">
                     <Title
-                        text="Create a partner info"
+                        text="Create a supplier info"
                         icon="plus"
                         color={Color.GREEN}
                     /> 
