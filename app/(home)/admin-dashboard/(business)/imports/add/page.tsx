@@ -5,8 +5,8 @@ import Main from "@/layouts/DashboardMain"
 import { Color } from "@/utils/constants/colors"
 import { useEffect, useState } from "react";
 import useNotification from "@/utils/hooks/useNotification";
-import SupplierSection, { CreateSupplier, Field, SelectSupplier } from "./SupplierSection";
-import ProductsSection from "./ProductsSection";
+import SupplierSection, { CreateSupplier, Field, SelectSupplier } from "@/layouts/SupplierSection";
+import ProductsSection, { IOrderDetail } from "@/layouts/ProductsSection";
 import DropDown, { IDropdownData } from "@/components/DropDown";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { getAllWarehouses } from "@/api/warehouse";
@@ -16,13 +16,6 @@ import { useRouter } from "next/navigation";
 import { createSupplier } from "@/api/supplier";
 import IconButton from "@/components/IconButton";
 
-export interface IOrderDetail {
-    [key: string]: string | number,
-    productId: number,
-    productName: string,
-    quantity: number,
-    price: number
-}
 
 export default function Page() {
     const [showLoading, hideLoading] = useLoadingAnimation();
@@ -150,7 +143,7 @@ export default function Page() {
             </Header>
             <Main>
                 <div className="flex justify-around h-full ">
-                    <section className="w-[480px] h-full flex flex-col gap-8 p-5 border-2 rounded-md shadow-md">
+                    <section className="w-[540px] h-full flex flex-col gap-8 p-5 border-2 rounded-md shadow-md">
                         <SupplierSection
                             supplierMode={supplierMode}
                             setSupplierMode={setSupplierMode}
@@ -168,7 +161,7 @@ export default function Page() {
                         }
                         </SupplierSection>
                     </section>
-                    <section className="w-[700px] h-full flex flex-col gap-5 p-5  border-2 rounded-md shadow-md">
+                    <section className="w-[640px] h-full flex flex-col gap-5 p-5  border-2 rounded-md shadow-md">
                         <div className="w-96">
                             <DropDown
                                 icon="warehouse"

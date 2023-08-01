@@ -17,6 +17,11 @@ export interface ICreateImportOrder {
     importOrderDetails: ICreateImportOrderDetail[],
 }
 
+export interface IUpdateImportOrder {
+    supplierId: number,
+    warehouseId: number,
+}
+
 export const getAllImportOrder = () => {
     return axios.get<IImportOrderResponse[]>(apiPrefix);
 }
@@ -29,10 +34,8 @@ export const createImportOrder = (data: ICreateImportOrder) => {
     return axios.post(`${apiPrefix}`, data);
 }
 
-export const updateImportOrder = (id: number, isCanceled: boolean) => { 
-    return axios.put(`${apiPrefix}/${id}`, {
-        isCanceled
-    });
+export const updateImportOrder = (id: number, data: IUpdateImportOrder) => { 
+    return axios.put(`${apiPrefix}/${id}`, data);
 }
 
 export const deleteImportOrder = (id: number) => {

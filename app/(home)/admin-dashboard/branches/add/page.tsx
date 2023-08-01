@@ -82,7 +82,7 @@ export default function Page() {
                     <div className="relative h-60">
                         <Image
                             className="object-cover"
-                            src="/images/branch-create2.jpg"
+                            src="/images/branch-create.jpg"
                             alt="Building image"
                             fill
                         />

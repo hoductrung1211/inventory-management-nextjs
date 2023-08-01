@@ -1,6 +1,6 @@
 'use client';
 import { IBranchResponse, deleteBranch, getBranchById } from "@/api/branch";
-import { IImportOrderResponse, getImportOrderById } from "@/api/importOrder";
+import { IImportOrderResponse, getImportOrderById, updateImportOrder } from "@/api/importOrder";
 import { IWarehouseResponse, getAllWarehouses, getWarehouseById } from "@/api/warehouse";
 import BackwardButton from "@/components/BackwardButton";
 import Title from "@/components/DashboardTitle";
@@ -17,18 +17,21 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IImportOrderData } from "../page";
-import { getSupplierById } from "@/api/supplier";
+import { createSupplier, getSupplierById } from "@/api/supplier";
 import { getTrackingStateById } from "@/api/trackingState";
 import { getAllProducts } from "@/api/product";
 import { getImportOrdersDetailById } from "@/api/importOrderDetail";
 import Icon from "@/components/Icon";
-import { IImportOrderTrackingResponse, getTrackingsByOrderId } from "@/api/importOrderTracking";
+import { IImportTrackingResponse, getTrackingsByOrderId } from "@/api/importTracking";
 import { getAllEmployees } from "@/api/employee";
+import DropDown, { IDropdownData } from "@/components/DropDown";
+import SupplierSection, { CreateSupplier, Field, SelectSupplier } from "@/layouts/SupplierSection";
+import validate from "@/utils/functions/validateFields";
 
 export interface IImportOrderDetailData {
     product: string,
-    quantity: number,
-    price: number
+    quantity: string,
+    price: string
 }
 
 interface ITrackingData {
@@ -42,8 +45,8 @@ export default function Page({
 }: {
     params: {id: string}
 }) {
-    const router = useRouter();
     const [showLoading, hideLoading] = useLoadingAnimation();
+    const router = useRouter();
     
     const orderId = Number.parseInt(params.id);
     const [order, setOrder] = useState<IImportOrderData>({
@@ -94,8 +97,8 @@ export default function Page({
                 const product = products.find(prod => prod.id === item.productId);
                 return {
                     product: `${product?.name}`,
-                    price: item.price,
-                    quantity: item.quantity,
+                    price: item.price.toLocaleString(),
+                    quantity: item.quantity.toLocaleString(),
                 }
             }));
         }
@@ -134,10 +137,16 @@ export default function Page({
                 <div className="flex gap-4">
                     <BackwardButton />
                     <Button
-                        text="Edit"
+                        text="Edit Information"
                         color={Color.WHITE}
-                        bgColor={Color.ORANGE} 
-                        actionHandler={() => router.push(`${orderId}/edit`)}
+                        bgColor={Color.BLUE} 
+                        actionHandler={() => {router.push(`${orderId}/edit`)}}
+                    /> 
+                    <Button
+                        text="Edit Products"
+                        color={Color.WHITE}
+                        bgColor={Color.BLUE} 
+                        actionHandler={() => {router.push(`${orderId}/edit-products`)}}
                     /> 
                 </div>
             </Header>
@@ -147,7 +156,7 @@ export default function Page({
                     <DetailSection 
                         orderDetails={details}
                         trackings={trackings}
-                    />
+                    />  
                 </div>
             </Main>
         </section>
@@ -172,7 +181,7 @@ function InfoSection({
     ];
 
     return (
-        <section className="w-2/5 p-3 pt-6 h-full flex flex-col border-2 rounded-l-sm gap-6">
+        <section className="flex-shrink-0 w-2/5 p-3 pt-6 h-full flex flex-col border-2 rounded-l-sm gap-6">
             <Title
                 text="Detailed Information"
                 icon="circle-info"
@@ -240,3 +249,4 @@ function DetailSection({
         </section>
     )
 }
+ 

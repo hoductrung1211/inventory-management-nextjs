@@ -1,8 +1,8 @@
 import axios from "./axios.config";
 
-const apiPrefix = "/importOrderTrackings";
+const apiPrefix = "/importTrackings";
 
-export interface IImportOrderTrackingResponse {
+export interface IImportTrackingResponse {
     imOrderId: number,
     dateTime: Date,
     employeeId: number, 
@@ -10,7 +10,7 @@ export interface IImportOrderTrackingResponse {
 }
 
 export const getTrackingsByOrderId = (imOrderId: number) => {
-    return axios.get<IImportOrderTrackingResponse[]>(`${apiPrefix}/${imOrderId}`);
+    return axios.get<IImportTrackingResponse[]>(`${apiPrefix}/${imOrderId}`);
 }
 
  

@@ -1,6 +1,6 @@
 import axios from "./axios.config";
 
-const apiPrefix = "/user";
+const apiPrefix = "/users";
 
 export interface IUserResponse {
     username: string,

@@ -16,7 +16,7 @@ export default function Page() {
     const [suppliers, setSuppliers] = useState<ISupplierResponse[]>([]);
     const [filterdSuppliers, setFilterdSuppliers] = useState<IItem[]>([]);
     const [searchValue, setSearchValue] = useState("");
-
+    
     useEffect(() => {
         fetchSuppliers();
     }, []);

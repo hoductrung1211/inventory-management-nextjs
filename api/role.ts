@@ -1,6 +1,6 @@
 import axios from "./axios.config";
 
-const apiPrefix = "/role";
+const apiPrefix = "/roles";
 
 export interface IRoleResponse {
     id: number,

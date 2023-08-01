@@ -49,7 +49,5 @@ export const updateEmployee = (
     id: number,
     data: ICreateEmployee
 ) => { 
-    console.log(id);
-    console.log(data);
     return axios.put(`${apiPrefix}/${id}`, data);
 }

@@ -2,12 +2,19 @@
 import {IProductResponse, getAllProducts } from "@/api/product";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import useNotification from "@/utils/hooks/useNotification";
-import { ChangeEvent, useEffect, useState } from "react";
-import { IOrderDetail } from "./page";
+import { ChangeEvent, useEffect, useState } from "react"; 
 import { IDropdownData } from "@/components/DropDown";
 import { Button } from "@/layouts/DashboardHeader";
 import { Color } from "@/utils/constants/colors";
-import Icon from "@/components/Icon";
+import Icon from "@/components/Icon"; 
+
+export interface IOrderDetail {
+    [key: string]: string | number,
+    productId: number,
+    productName: string,
+    quantity: number,
+    price: number
+}
 
 export default function ProductsSection({
     details,

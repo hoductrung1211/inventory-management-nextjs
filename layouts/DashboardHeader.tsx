@@ -48,7 +48,7 @@ export function Button({
 
     return (
         <button
-            className={`flex gap-2 items-center justify-center min-w-[80px] px-3 py-2 bg-${bgColor} text-${color} font-bold rounded-md hover:bg-opacity-80 transition`}
+            className={`flex gap-2 items-center justify-center min-w-[80px] px-3 py-2 bg-${bgColor} text-${color} font-bold hover:border-gray-200 border-2 border-transparent rounded-md hover:bg-opacity-80 transition`}
             onClick={actionHandler}
         >
             { icon && <Icon name={icon} /> }

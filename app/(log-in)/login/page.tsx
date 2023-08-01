@@ -31,11 +31,7 @@ export default function Page() {
             const { data } = await login(credentials.username, credentials.password);
             localStorage.setItem("token", data);
             router.push(adminUrls.Home);
-        }
-        // catch(error) {
-        //     console.log(error);
-        //     notify("Login failed!", "error");
-        // }
+        } 
         catch(error) {
             if (axios.isAxiosError(error)) {
                 console.log(error.response?.data);

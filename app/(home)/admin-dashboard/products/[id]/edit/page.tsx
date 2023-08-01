@@ -61,7 +61,6 @@ export default function Page({
         try {
             showLoading();
             const {data} = await getProductById(productId);
-            console.log(params);
             console.log(data);
             setFields([
                 {...fields[0], value: data.name},
