@@ -7,7 +7,7 @@ import useNotification from "@/utils/hooks/useNotification";
 import SupplierSection, { CreateSupplier, Field, SelectSupplier } from "@/layouts/SupplierSection";
 import ProductsSection, { IOrderDetail } from "@/layouts/ProductsSection"; 
 import { useRouter } from "next/navigation"; 
-import { IImportOrderDetailResponse, deleteImportOrderDetail, getImportOrdersDetailById } from "@/api/importOrderDetail";
+import { IImportOrderDetailResponse, createImportOrderDetail, deleteImportOrderDetail, getImportOrdersDetailById } from "@/api/importOrderDetail";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { IProductResponse, getAllProducts, getProductById } from "@/api/product";
 import { couldStartTrivia } from "typescript";
@@ -78,15 +78,24 @@ export default function Page({
 
     const handleChangeSelected = async (id: number) => { 
         setSelectedProduct(orderProducts.find(prod => prod.productId === id));
-        const {data} = await getProductById(id)
-        setProductName(data.name)
+        const {data} = await getProductById(id);
+        setProductName(data.name);
     }
 
     const handleDelete = (productId: number) => {
         showLoading();
         deleteImportOrderDetail(orderId, productId)
-        .then(res => {
+        .then(async (res) => {
             setDataset(dataset.filter(item => item.productId != productId));
+
+            const {data} = await getProductById(productId);
+            setProductDropdown([
+                ...productDropdown,
+                {
+                    text: data.name,
+                    value: productId
+                }
+            ]);
         })
         .catch(error => console.log(error))
         .finally(() => hideLoading());
@@ -104,11 +113,47 @@ export default function Page({
                     totalPrice: (newPrice * newQuantity).toLocaleString(),
                 });
             return detail;
-        }))
+        }));
     }
 
     const handleCancelEdit = () => { 
         setSelectedProduct(undefined);
+    }
+
+    const handleAddDetail = (productId: number, quantity: number, price: number) => {
+        showLoading();
+        createImportOrderDetail({
+            orderId,
+            productId,
+            quantity,
+            price
+        })
+        .then(async (res) => {
+            notify("Add order detail successfully!", "success")
+            setProductDropdown(productDropdown.filter(prod => 
+                prod.value != productId
+            ));
+            const data = res.data;
+            const {data: product} = await getProductById(data.productId);
+            
+            setDataset([
+                ...dataset,
+                {
+                    productId: data.productId,
+                    product: product.name,
+                    quantity: data.quantity + "",
+                    price: data.price + "",
+                    totalPrice: (data.price * data.quantity).toLocaleString(),
+                }
+            ]);
+        }) 
+        .catch((ex) => {
+            notify("Add order detail failed!", "error");
+            console.log(ex);
+        })
+        .finally(() => {
+            hideLoading();
+        })
     }
 
     return (
@@ -132,11 +177,14 @@ export default function Page({
                             key={selectedProduct?.productId ?? 0}
                             detail={selectedProduct}
                             productName={productName}
-                            // dropdown={productDropdown}
                             handleCancelEdit={handleCancelEdit}
                             handleUpdate={handleUpdate}
-                        /> :
-                        <AddControlSection />
+                        /> : 
+                        // <></>
+                        <AddControlSection
+                            dropdown={productDropdown}
+                            handleAddDetail={handleAddDetail}
+                        />
                     }
                     </section> 
                 </div>

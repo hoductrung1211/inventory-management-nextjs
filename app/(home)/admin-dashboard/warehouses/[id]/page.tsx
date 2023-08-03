@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import InfoBar from "@/components/InfoBar";
 import Table from "@/layouts/Table";
-import { getWhsProductsByWarehouse, IWarehouseProductResponse } from "@/api/warehouseProduct";
+import { getWhsProductsByWarehouse, IWarehouseProductResponse } from "@/api/stock";
 import { IProductResponse, getAllProducts } from "@/api/product";
 import usePopup from "@/utils/hooks/usePopup";
 import Popup from "@/components/Popup";

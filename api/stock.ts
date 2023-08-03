@@ -13,13 +13,13 @@ export const getAllWhsProducts = () => {
 }
 
 export const getWhsProductsByWarehouse = (warehouseId: number) => {
-    return axios.get<IWarehouseProductResponse[]>(`${apiPrefix}`, {
-        params: {
-            warehouseId: warehouseId
-        }
-    });
+    return axios.get<IWarehouseProductResponse[]>(`${apiPrefix}/${warehouseId}`);
 }
 
 export const getWhsProductByProdId = (id: number) => {
-    return axios.get<IWarehouseProductResponse[]>(`${apiPrefix}/${id}`);
+    return axios.get<IWarehouseProductResponse[]>(`${apiPrefix}`, {
+        params: {
+            prodId: id
+        }
+    });
 }

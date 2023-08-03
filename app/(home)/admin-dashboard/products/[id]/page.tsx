@@ -16,7 +16,7 @@ import InfoBar from "@/components/InfoBar";
 import Image from "next/image";
 import Main from "@/layouts/DashboardMain";
 import { IProductData } from "../page";
-import { IWarehouseProductResponse, getWhsProductByProdId } from "@/api/warehouseProduct";
+import { IWarehouseProductResponse, getWhsProductByProdId } from "@/api/stock";
 import { IWarehouseResponse, getAllWarehouses } from "@/api/warehouse";
 
 interface IWarehouse {

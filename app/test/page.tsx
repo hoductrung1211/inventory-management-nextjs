@@ -1,65 +1,76 @@
 'use client';
 
-import Image from "next/image";
 import { useState } from "react";
 
-interface IHomestay {
-    homestayId: number,
+interface IRoom {
     name: string,
-    numPeople: number,
     price: number,
-    images: string,
-} 
+    checkIn: string, // or Date
+    checkOut: string, // or Date
+    amount: number,
+    orderId: string,
+    date: string, // or Date
+}
 
 
 export default function Page() {
-    const address = "Nha Trang";
-    const [homestays, setHomestays] = useState<IHomestay[]>([
-        { homestayId: 1, name: "Căn hộ Mường Thanh Khánh Hoà - Review Nha Trang", numPeople: 2, price: 123, images: "abc"},
-        { homestayId: 2, name: "B", numPeople: 2, price: 123, images: "abc"},
-        { homestayId: 3, name: "C", numPeople: 2, price: 123, images: "abc"},
-        { homestayId: 4, name: "D", numPeople: 2, price: 123, images: "abc"},
-        { homestayId: 5, name: "E", numPeople: 2, price: 123, images: "abc"},
-    ]);
+    const [rooms, setRooms] = useState([
+        { name: "Luxury Room", price: 600, checkIn: "20/11/2023", checkOut: "21/11/2023", amount: 600, orderId: "RPT MCK", date: "03/08/2023"},
+        { name: "Luxury Room", price: 600, checkIn: "20/11/2023", checkOut: "21/11/2023", amount: 600, orderId: "RPT MCK", date: "03/08/2023"},
+        { name: "Luxury Room", price: 600, checkIn: "20/11/2023", checkOut: "21/11/2023", amount: 600, orderId: "RPT MCK", date: "03/08/2023"},
+        { name: "Luxury Room", price: 600, checkIn: "20/11/2023", checkOut: "21/11/2023", amount: 600, orderId: "RPT MCK", date: "03/08/2023"},
+        { name: "Luxury Room", price: 600, checkIn: "20/11/2023", checkOut: "21/11/2023", amount: 600, orderId: "RPT MCK", date: "03/08/2023"},
+    ])
     return (
-        <div className="flex gap-3 w-[1200px] h-screen mx-auto border-x-2">
-            <section className="flex-shrink-0 w-[300px] p-3 bg-gray-50">
-                 
+        <div className="flex flex-col gap-4 w-[1200px] p-4 mx-auto border-2">
+            <section className="">
+                <input 
+                    className="w-72 h-9 px-2 py-1 rounded-md border-2"
+                    placeholder="Type something here..."
+                />
             </section>
-            <section className="w-full flex flex-col gap-3 p-3 border-l-2">
-                <h3 className="font-semibold text-lg">{address}: 740 properties founded</h3>
-
-                 {homestays.map(homestay => (
-                    <Homestay 
-                        key={homestay.homestayId} 
-                        homestay={homestay}
-                     />
-                 ))}
+            <section className="grid grid-cols-3 gap-4">
+            {rooms.map(room => 
+                <Room room={room} />    
+            )}
             </section>
         </div>
     )
 }
-
-function Homestay({
-    homestay
+ 
+function Room({
+    room
 }: {
-    homestay: IHomestay
+    room: IRoom
 }) {
     return (
-        <div className="flex items-start gap-3 w-full p-3 border rounded-md">
-            <div className="relative flex-shrink-0 w-60 aspect-square bg-gray-50">
-                <Image
-                    className="object-contain"
-                    src={""}
-                    alt="homestay-image"
-                    fill
-                />
+        <div className="flex flex-col gap-3 py-2 px-3 bg-gray-100 rounded-md">
+            <h3 className="text-lg font-semibold">
+                {room.name}
+            </h3>
+            <p>
+                <span className="font-semibold">Price: </span> 
+                ${room.price} per night
+            </p>
+            <div>
+                <p>
+                    <span className="font-semibold w-24 inline-block">Check In: </span>
+                        {room.checkIn}
+                    </p>
+                <p><span className="font-semibold w-24 inline-block">Check Out: </span>{room.checkOut}</p>
             </div>
-            <div className="flex flex-col gap-5 w-full ">
-                <h2 className="text-xl font-bold">{homestay.name}</h2>
-                <p>{homestay.numPeople}</p>
-                <p>{homestay.price}</p>
-            </div>
+            <p>
+                <span className="font-semibold">Amount: </span>
+                ${room.amount}
+            </p>
+            <p>
+                <span className="font-semibold">Order ID: </span>
+                {room.orderId}
+            </p>
+            <p>
+                <span className="font-semibold">Date: </span>
+                {room.date}
+            </p>
         </div>
     )
 }

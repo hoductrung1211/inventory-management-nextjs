@@ -19,6 +19,15 @@ export const getImportOrdersDetailById = (orderId: number) => {
     return axios.get<IImportOrderDetailResponse[]>(`${apiPrefix}/${orderId}`);
 }
 
+export const createImportOrderDetail = (data: {
+    orderId: number, 
+    productId: number,
+    quantity: number,
+    price: number
+}) => {
+    return axios.post<ICreateImportOrderDetail>(`${apiPrefix}`, data);
+}
+
 export const updateImportOrderDetail = (orderId: number, productId: number, data: {
     quantity: number,
     price: number,
