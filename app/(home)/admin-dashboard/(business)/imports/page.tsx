@@ -17,7 +17,10 @@ export interface IImportOrderData {
     id: number,
     supplierName: string,
     warehouseName: string,
+    warehouseId: number,
     trackingStateName: string,
+    receiptId?: number,
+    trackingStateId: number,
     lastUpdatedTime: string,
 }
 

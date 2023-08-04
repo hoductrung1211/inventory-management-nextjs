@@ -9,9 +9,9 @@ export default function Template({
 }) {
     const [_, setActiveNav] = useActiveNav();
     useEffect(() => {
-        setActiveNav("Import Orders");
+        setActiveNav("Import Receipts");
     }, []);
-
+    
     return (
         <>{children}</>
     )

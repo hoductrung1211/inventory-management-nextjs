@@ -24,8 +24,10 @@ export const staffNavs = [
 
 export const adminNavs = [
     {icon: 'house', url: adminUrls.Home, text: "Home"}, 
-    {icon: 'dolly', url: adminUrls.Imports, text: "Imports"}, 
-    {icon: 'truck-fast', url: adminUrls.Exports, text: "Exports"}, 
+    {icon: 'receipt', url: adminUrls.ImportReceipts, text: "Import Receipts"}, 
+    {icon: 'file-invoice-dollar', url: adminUrls.ExportReceipts, text: "Export Receipts"}, 
+    {icon: 'dolly', url: adminUrls.Imports, text: "Import Orders"}, 
+    {icon: 'truck-fast', url: adminUrls.Exports, text: "Export Orders"}, 
     {icon: 'box-open', url: adminUrls.Products, text: "Products"}, 
     {icon: 'boxes-stacked', url: adminUrls.ProductCategories, text: "Product Categories"}, 
     {icon: 'handshake-angle', url: adminUrls.Suppliers, text: "Suppliers"}, 
@@ -33,7 +35,7 @@ export const adminNavs = [
     {icon: 'building', url: adminUrls.Branches, text: "Branches"}, 
     {icon: 'user-tie', url: adminUrls.Employees, text: "Employees"},
     {icon: 'user', url: adminUrls.Users, text: "Users"},
-    {icon: 'chart-simple', url: adminUrls.Users, text: "Reports"}, 
+    // {icon: 'chart-simple', url: adminUrls.Users, text: "Reports"}, 
 
 ]
 

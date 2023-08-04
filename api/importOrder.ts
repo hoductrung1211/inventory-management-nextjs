@@ -8,6 +8,7 @@ export interface IImportOrderResponse {
     supplierId: number,
     warehouseId: number,
     trackingStateId: number,
+    receiptId?: number,
     lastUpdatedTime: Date,
 }
 
@@ -36,6 +37,10 @@ export const createImportOrder = (data: ICreateImportOrder) => {
 
 export const updateImportOrder = (id: number, data: IUpdateImportOrder) => { 
     return axios.put(`${apiPrefix}/${id}`, data);
+}
+
+export const updateImportOrderState = (orderId: number, data: {stateId: number}) => {
+    return axios.put(`${apiPrefix}/${orderId}/state`, data);
 }
 
 export const deleteImportOrder = (id: number) => {
