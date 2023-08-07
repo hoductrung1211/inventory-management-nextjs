@@ -1,6 +1,8 @@
 'use client';
-import { getAllBranches } from "@/api/branch";
-import { getAllEmployees } from "@/api/employee";
+import { getAllCustomers } from "@/api/customer";
+import { getAllExportOrder } from "@/api/exportOrder";
+import { getAllTrackingStates } from "@/api/trackingState";
+import { getAllWarehouses } from "@/api/warehouse";
 import SearchInput from "@/components/SearchInput";
 import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
@@ -11,14 +13,15 @@ import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface IEmployeeData {
+export interface IExportOrderData {
     id: number,
-    name: string,
-    gender: string,
-    dateOfBirth: string,
-    email: string,
-    branch: string,
-    manager: string,
+    customerName: string,
+    warehouseName: string,
+    warehouseId: number,
+    trackingStateName: string,
+    receiptId?: number,
+    trackingStateId: number,
+    lastUpdatedTime: string,
 }
 
 export default function Page() {
@@ -26,35 +29,34 @@ export default function Page() {
     const [showLoading, hideLoading] = useLoadingAnimation();
 
     const [searchValue, setSearchValue] = useState("");
-    const [employees, setEmployees] = useState<IEmployeeData[]>([]);
-    const [filterdEmployees, setFilteredEmployees] = useState<IItem[]>([]);
+    const [exports, setExports] = useState<IExportOrderData[]>([]);
+    const [filterdExports, setFilteredExports] = useState<IItem[]>([]);
 
     useEffect(() => {
-        fetchEmployees();
+        fetchOrders();
     }, []);
 
-    async function fetchEmployees() {
+    async function fetchOrders() {
         try {
             showLoading(); 
-            const {data} = await getAllEmployees();
-            const {data : brData} = await getAllBranches();
-
-            const newEEs: IEmployeeData[] = data.map(ee => {
-                const branch = brData.find(br => br.id === ee.branchId);
-                const mngr = data.find(emp => emp.id === ee.managerId);
-                const mngrName = mngr ? mngr.lastName + " " + mngr.firstName : ""
-                return {
-                    id: ee.id,
-                    name: ee.lastName + " " + ee.firstName,
-                    gender: ee.gender ? "Male" : "Female",
-                    dateOfBirth: ee.dateOfBirth ?? "",
-                    email: ee.email,
-                    branch: branch?.name ?? "",
-                    manager: mngrName
-                }
-            })
-            setEmployees(newEEs);
-            setFilteredEmployees(toIndexSignature(newEEs));
+            const {data} = await getAllExportOrder();
+            const {data: customers} = await getAllCustomers();
+            const {data: warehouses} = await getAllWarehouses();
+            const {data: trackingStates} = await getAllTrackingStates();
+            const newData = data.map(order => {
+                const customer = customers.find(p => p.id === order.customerId);
+                const warehouse = warehouses.find(whs => whs.id === order.warehouseId);
+                const trackingState = trackingStates.find(ts => ts.id === order.trackingStateId);
+                return ({
+                    ...order,
+                    customerName: customer?.name + "",
+                    warehouseName: warehouse?.name + "",
+                    trackingStateName: trackingState?.name + "",
+                    lastUpdatedTime: new Date(order.lastUpdatedTime).toLocaleString()
+                });
+            });
+            setExports(newData);
+            setFilteredExports(toIndexSignature(newData));
         }
         catch (error) {
             console.log(error);
@@ -68,39 +70,39 @@ export default function Page() {
         <section className="w-full flex flex-col">
             <Header>
                 <Button 
-                    text="Add Employee"
+                    text="Add Export Order"
                     color={Color.WHITE}
                     bgColor={Color.GREEN} 
-                    actionHandler={() => {router.push("employees/add")}}
+                    actionHandler={() => {router.push("exports/add")}}
                 />
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
                     <section className="flex gap-2 h-10">
                         <SearchInput
-                            placeholder="Type Employee ID here..."
+                            placeholder="Type Export Order ID here..."
                             value={searchValue}
                             handleChange={e => {
                                 const newSearchValue = e.target.value;
                                 setSearchValue(newSearchValue);
                                 const filterList = filterByFields(
-                                        toIndexSignature(employees), 
+                                        toIndexSignature(exports), 
                                         newSearchValue.trim(), 
-                                        ["id"]
+                                        ["id", "customerName"]
                                     );
-                                setFilteredEmployees(filterList);
+                                setFilteredExports(filterList);
                             }}
                         />
                     </section>
                     <Table
                         columns={[
-                            {id: 1, text: "Id", key: "id", linkRoot: "employees/"},
-                            {id: 2, text: "Full Name", key: "name"},
-                            {id: 5, text: "Email", key: "email"},
-                            {id: 6, text: "Branch", key: "branch"},
-                            {id: 7, text: "Manager", key: "manager"},
+                            {id: 1, text: "Id", key: "id", linkRoot: "exports/"},
+                            {id: 2, text: "Customer Name", key: "customerName"},
+                            {id: 3, text: "Warehouse Name", key: "warehouseName"},
+                            {id: 4, text: "State", key: "trackingStateName"},
+                            {id: 6, text: "Last updated", key: "lastUpdatedTime"},
                         ]}
-                        dataSet={filterdEmployees}
+                        dataSet={filterdExports}
                     />
                 </div>
             </Main>

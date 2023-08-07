@@ -273,9 +273,7 @@ function InfoSection({
                     />
                 )}
             </div>
-            {
-                // (order.trackingStateName == "Hoàn thành" || order.trackingStateName == "Hủy") ?
-                // <></> :
+            { 
                 <div className="flex flex-col gap-3 h-full p-3 bg-gray-50 rounded-md border-t-2">
                     <div className="flex gap-5 items-center h-11">
                         <p className="flex-shrink-0 w-16 font-semibold ">State: </p>
@@ -449,7 +447,7 @@ function ReceiptSection({
                     details.map(detail => 
                         <div 
                             key={detail.productId}
-                            className={"grid grid-cols-4 gap-2 py-2 place-items-center border-b " + (detail.isRemoved && " bg-gray-200") }
+                            className={"grid grid-cols-4 gap-2 py-2 place-items-center border-b " + (detail.isRemoved && " bg-red-200") }
                         >
                             <p className="font-semibold">{detail.product}</p>
                             <input 

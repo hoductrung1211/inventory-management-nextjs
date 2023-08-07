@@ -1,60 +1,58 @@
 'use client';
-import { getAllBranches } from "@/api/branch";
 import { getAllEmployees } from "@/api/employee";
+import { getAllExportReceipt } from "@/api/exportReceipt";
+import { getAllWarehouses } from "@/api/warehouse";
 import SearchInput from "@/components/SearchInput";
 import Header, { Button } from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
-import { Color } from "@/utils/constants/colors";
+import datetimeFormat from "@/utils/functions/datetimeFormat";
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface IEmployeeData {
+export interface IReceipt {
     id: number,
-    name: string,
-    gender: string,
-    dateOfBirth: string,
-    email: string,
-    branch: string,
-    manager: string,
+    orderId: number,
+    warehouse: string,
+    employee: string,
+    datetime: string,
 }
 
 export default function Page() {
-    const router = useRouter();
     const [showLoading, hideLoading] = useLoadingAnimation();
 
     const [searchValue, setSearchValue] = useState("");
-    const [employees, setEmployees] = useState<IEmployeeData[]>([]);
-    const [filterdEmployees, setFilteredEmployees] = useState<IItem[]>([]);
+    const [receipts, setReceipts] = useState<IReceipt[]>([]);
+    const [filterdReceipts, setFilteredReceipts] = useState<IItem[]>([]);
 
     useEffect(() => {
-        fetchEmployees();
+        fetchReceipts();
     }, []);
 
-    async function fetchEmployees() {
+    async function fetchReceipts() {
         try {
             showLoading(); 
-            const {data} = await getAllEmployees();
-            const {data : brData} = await getAllBranches();
+            const {data: receiptsResponse} = await getAllExportReceipt();
+            const {data : warehouses} = await getAllWarehouses();
+            const {data: employees} = await getAllEmployees();
 
-            const newEEs: IEmployeeData[] = data.map(ee => {
-                const branch = brData.find(br => br.id === ee.branchId);
-                const mngr = data.find(emp => emp.id === ee.managerId);
-                const mngrName = mngr ? mngr.lastName + " " + mngr.firstName : ""
+            const newReceipts: IReceipt[] = receiptsResponse.map(r => {
+                const warehouse = warehouses.find(whs => whs.id === r.warehouseId);
+                const employee = employees.find(ee => ee.id === r.employeeId);
+
                 return {
-                    id: ee.id,
-                    name: ee.lastName + " " + ee.firstName,
-                    gender: ee.gender ? "Male" : "Female",
-                    dateOfBirth: ee.dateOfBirth ?? "",
-                    email: ee.email,
-                    branch: branch?.name ?? "",
-                    manager: mngrName
-                }
-            })
-            setEmployees(newEEs);
-            setFilteredEmployees(toIndexSignature(newEEs));
+                    id: r.id,
+                    orderId: r.orderId,
+                    employee: employee?.lastName + " " + employee?.firstName,
+                    datetime: datetimeFormat(r.dateTime),
+                    warehouse: warehouse?.name + "",     
+                } 
+            });
+
+            setReceipts(newReceipts);
+            setFilteredReceipts(toIndexSignature(newReceipts));
         }
         catch (error) {
             console.log(error);
@@ -66,41 +64,36 @@ export default function Page() {
 
     return (
         <section className="w-full flex flex-col">
-            <Header>
-                <Button 
-                    text="Add Employee"
-                    color={Color.WHITE}
-                    bgColor={Color.GREEN} 
-                    actionHandler={() => {router.push("employees/add")}}
-                />
+            <Header> 
+                <div></div>
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
                     <section className="flex gap-2 h-10">
                         <SearchInput
-                            placeholder="Type Employee ID here..."
+                            placeholder="Type Receipt ID here..."
                             value={searchValue}
                             handleChange={e => {
                                 const newSearchValue = e.target.value;
                                 setSearchValue(newSearchValue);
                                 const filterList = filterByFields(
-                                        toIndexSignature(employees), 
+                                        toIndexSignature(receipts), 
                                         newSearchValue.trim(), 
                                         ["id"]
                                     );
-                                setFilteredEmployees(filterList);
+                                setFilteredReceipts(filterList);
                             }}
                         />
                     </section>
                     <Table
                         columns={[
-                            {id: 1, text: "Id", key: "id", linkRoot: "employees/"},
-                            {id: 2, text: "Full Name", key: "name"},
-                            {id: 5, text: "Email", key: "email"},
-                            {id: 6, text: "Branch", key: "branch"},
-                            {id: 7, text: "Manager", key: "manager"},
+                            {id: 1, text: "ID", key: "id", linkRoot: "export-receipts/"},
+                            {id: 2, text: "Order ID", key: "orderId"},
+                            {id: 5, text: "Warehouse", key: "warehouse"},
+                            {id: 6, text: "Employee", key: "employee"},
+                            {id: 7, text: "Date Time", key: "datetime"},
                         ]}
-                        dataSet={filterdEmployees}
+                        dataSet={filterdReceipts}
                     />
                 </div>
             </Main>

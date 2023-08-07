@@ -5,15 +5,15 @@ import Main from "@/layouts/DashboardMain"
 import { Color } from "@/utils/constants/colors"
 import { useEffect, useState } from "react";
 import useNotification from "@/utils/hooks/useNotification";
-import SupplierSection, { CreateSupplier, Field, SelectSupplier } from "./SupplierSection";
+import CustomerSection, { CreateSupplier, Field, SelectCustomer } from "./SupplierSection";
 import ProductsSection, { IOrderDetail } from "./ProductsSection";
 import DropDown, { IDropdownData } from "@/components/DropDown";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { getAllWarehouses } from "@/api/warehouse";
 import validate from "@/utils/functions/validateFields";
-import { createImportOrder } from "@/api/importOrder";
 import { useRouter } from "next/navigation";
-import { createSupplier } from "@/api/supplier";
+import { createCustomer } from "@/api/customer";
+import { createExportOrder } from "@/api/exportOrder";
 
 
 export default function Page() {
@@ -21,15 +21,14 @@ export default function Page() {
     const notify = useNotification();
     const router = useRouter();
 
-    // Supplier
-    const [supplierMode, setSupplierMode] = useState(false); // true (create) / false (select)
-    const [supplierId, setSupplierId] = useState<number>();
-    const [newSupplierFields, setNewSupplierFields] = useState<Field[]>([
+    // Customer
+    const [customerMode, setCustomerMode] = useState(false); // true (create) / false (select)
+    const [customerId, setCustomerId] = useState<number>();
+    const [newCustomerFields, setNewCustomerFields] = useState<Field[]>([
         {label: "Name", value: "", icon: "signature", isRequired: true, errorText: "", type: "text"},
         {label: "Phone number", value: "", icon: "phone", isRequired: true, errorText: "", type: "text"},
         {label: "Email", value: "", icon: "at", isRequired: true, errorText: "", type: "email"},
         {label: "Address", value: "", icon: "map-location-dot", isRequired: false, errorText: "", type: "text"},
-        {label: "Description", value: "", icon: "quote-left", isRequired: false, errorText: "", type: "text"},
     ]);
     // Warehouse
     const [warehouseDropdowns, setWarehouseDrops] = useState<IDropdownData[]>([]);
@@ -69,26 +68,25 @@ export default function Page() {
 
         try {
             showLoading();
-            let tempSupplierId = supplierId;
-            if (supplierMode) {
-                const {data: supplier} = await createSupplier({
-                    name: newSupplierFields[0].value + "",
-                    email: newSupplierFields[1].value + "",
-                    phoneNumber: newSupplierFields[2].value + "",
-                    address: newSupplierFields[3].value + "",
-                    detailDescription: newSupplierFields[4].value + ""
+            let tempCutomerId = customerId;
+            if (customerMode) {
+                const {data: supplier} = await createCustomer({
+                    name: newCustomerFields[0].value + "",
+                    email: newCustomerFields[1].value + "",
+                    phoneNumber: newCustomerFields[2].value + "",
+                    address: newCustomerFields[3].value + "",
                 });
-                tempSupplierId = supplier.id;
+                tempCutomerId = supplier.id;
             }
             // Cannot be undefined because have been checked
             const data = {
-                supplierId: tempSupplierId ?? 0, 
+                customerId: tempCutomerId ?? 0, 
                 warehouseId: warehouseId ?? 0,
                 importOrderDetails: details
             }
-            await createImportOrder(data);
+            await createExportOrder(data);
             router.push("./");
-            notify("Add an Import Order successfully!", "success");
+            notify("Add an Export Order successfully!", "success");
         }
         catch (error) {
             
@@ -99,20 +97,20 @@ export default function Page() {
     }
 
     function checkConstraints(): boolean {
-        if (supplierMode) {
-            const [isValid, errors] = validate(newSupplierFields);
-            const newFields = newSupplierFields.map((field, idx) => ({
+        if (customerMode) {
+            const [isValid, errors] = validate(newCustomerFields);
+            const newFields = newCustomerFields.map((field, idx) => ({
                 ...field,
                 errorText: errors[idx],
             }));
-            setNewSupplierFields(newFields);
+            setNewCustomerFields(newFields);
             if (!isValid) {
-                notify("Cannot add order without supplier information! Please fill in the form", "error");
+                notify("Cannot add order without customer information! Please fill in the form", "error");
                 return false;
             }
         }
-        else if (!supplierId) {
-            notify("Cannot add order without supplier selected! Please add supplier", "error");
+        else if (!customerId) {
+            notify("Cannot add order without customer selected! Please add customer", "error");
             return false;
         }
         if (!warehouseId) {
@@ -143,22 +141,22 @@ export default function Page() {
             <Main>
                 <div className="flex justify-around h-full ">
                     <section className="w-[540px] h-full flex flex-col gap-8 p-5 border-2 rounded-md shadow-md">
-                        <SupplierSection
-                            supplierMode={supplierMode}
-                            setSupplierMode={setSupplierMode}
+                        <CustomerSection
+                            customerMode={customerMode}
+                            setCustomerMode={setCustomerMode}
                         >
                         {
-                            supplierMode ? 
+                            customerMode ? 
                             <CreateSupplier 
-                                fields={newSupplierFields}
-                                setFields={setNewSupplierFields}
+                                fields={newCustomerFields}
+                                setFields={setNewCustomerFields}
                             /> :
-                            <SelectSupplier
-                                handleChangeSupplier={(newId: number) => setSupplierId(newId)}
-                                supplierId={supplierId}
+                            <SelectCustomer
+                                handleChangeCustomer={(newId: number) => setCustomerId(newId)}
+                                customerId={customerId}
                             />
                         }
-                        </SupplierSection>
+                        </CustomerSection>
                     </section>
                     <section className="w-[640px] h-full flex flex-col gap-5 p-5  border-2 rounded-md shadow-md">
                         <div className="w-96">

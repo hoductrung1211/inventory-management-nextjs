@@ -31,6 +31,7 @@ export const adminNavs = [
     {icon: 'box-open', url: adminUrls.Products, text: "Products"}, 
     {icon: 'boxes-stacked', url: adminUrls.ProductCategories, text: "Product Categories"}, 
     {icon: 'handshake-angle', url: adminUrls.Suppliers, text: "Suppliers"}, 
+    {icon: 'cart-shopping', url: adminUrls.Customers, text: "Customers"}, 
     {icon: 'warehouse', url: adminUrls.Warehouses, text: "Warehouses"}, 
     {icon: 'building', url: adminUrls.Branches, text: "Branches"}, 
     {icon: 'user-tie', url: adminUrls.Employees, text: "Employees"},

@@ -5,8 +5,8 @@ import Main from "@/layouts/DashboardMain"
 import { Color } from "@/utils/constants/colors"
 import { useEffect, useState } from "react";
 import useNotification from "@/utils/hooks/useNotification";
-import SupplierSection, { CreateSupplier, Field, SelectSupplier } from "@/layouts/SupplierSection";
-import ProductsSection, { IOrderDetail } from "@/layouts/ProductsSection";
+import SupplierSection, { CreateSupplier, Field, SelectSupplier } from "@/app/(home)/admin-dashboard/(business)/imports/add/SupplierSection";
+import ProductsSection, { IOrderDetail } from "@/app/(home)/admin-dashboard/(business)/imports/add/ProductsSection";
 import DropDown, { IDropdownData } from "@/components/DropDown";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { getAllWarehouses, getWarehouseById } from "@/api/warehouse";
