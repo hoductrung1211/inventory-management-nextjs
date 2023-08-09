@@ -25,7 +25,7 @@ export default function Table ({
                             handleRowClick(row.id);
                         }
                     }}
-                    className={`grid grid-cols-${colsCount} min-h-[48px] shrink-0 odd:bg-gray-50 border-2 border-transparent hover:border-gray-300 hover:bg-[#ecf0f1]`}>
+                    className={`grid grid-cols-${colsCount} min-h-[48px] shrink-0 even:bg-gray-50 border-2 border-transparent hover:border-gray-300 hover:bg-[#ecf0f1]`}>
                     {columns.map(col => (
                         <div 
                             key={col.key + col.text} 
@@ -54,13 +54,13 @@ function Header({
     columns: {id: number, text: string, key: string, icon?: string}[],
 }) {
     const colsCount = columns.length;
-    const headerClassName = `h-11 grid grid-cols-${colsCount} rounded-t-md overflow-hidden text-white`;
+    const headerClassName = `h-11 grid grid-cols-${colsCount} text-blue-500 rounded-t-md overflow-hidden`;
     return (
         <header className={headerClassName}>
         {columns.map(col => (
             <div
                 key={col.id} 
-                className="col-span-1 grid place-items-center font-bold bg-[#34495e] hover:bg-opacity-90">
+                className="col-span-1 grid place-items-center font-bold bg-gray-100 hover:bg-gray-100">
                 {col.text}
             </div>
         ))}

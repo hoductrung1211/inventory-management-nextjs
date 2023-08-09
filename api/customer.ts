@@ -24,7 +24,7 @@ export const createCustomer = (data: {
     email: string,
     address: string,
 }) => { 
-    return axios.post(`${apiPrefix}`, data);
+    return axios.post<ICustomerResponse>(`${apiPrefix}`, data);
 }
 
 export const deleteCustomer = (id: number) => {

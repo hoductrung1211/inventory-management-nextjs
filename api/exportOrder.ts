@@ -15,7 +15,7 @@ export interface IExportOrderResponse {
 export interface ICreateExportOrder {
     customerId: number,
     warehouseId: number,
-    importOrderDetails: ICreateExportOrderDetail[],
+    exportOrderDetails: ICreateExportOrderDetail[],
 }
 
 export interface IUpdateExportOrder {

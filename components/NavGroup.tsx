@@ -47,7 +47,7 @@ function LinkNav({
     handleChangeNav: (text: string) => void
 }) { 
     let navClassName = "w-full px-2.5 h-10 flex items-center gap-2 rounded-md ";
-    isActive ? navClassName += ' bg-gray-600 text-white font-semibold' : navClassName += ' text-gray-800 hover:bg-gray-200 ';
+    isActive ? navClassName += ' bg-blue-400 text-white font-semibold' : navClassName += ' text-gray-800 hover:bg-gray-200 ';
 
     return (
         <Link 

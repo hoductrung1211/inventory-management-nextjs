@@ -3,11 +3,11 @@ import { getAllCustomers } from "@/api/customer";
 import { getAllExportOrder } from "@/api/exportOrder";
 import { getAllTrackingStates } from "@/api/trackingState";
 import { getAllWarehouses } from "@/api/warehouse";
+import Button from "@/components/Button";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header  from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
-import { Color } from "@/utils/constants/colors";
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
@@ -69,16 +69,11 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header>
-                <Button 
-                    text="Add Export Order"
-                    color={Color.WHITE}
-                    bgColor={Color.GREEN} 
-                    actionHandler={() => {router.push("exports/add")}}
-                />
+                <h1 className="font-semibold">Export Orders</h1>
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
-                    <section className="flex gap-2 h-10">
+                    <section className="flex justify-between gap-2 h-10">
                         <SearchInput
                             placeholder="Type Export Order ID here..."
                             value={searchValue}
@@ -93,6 +88,13 @@ export default function Page() {
                                 setFilteredExports(filterList);
                             }}
                         />
+                        <Button
+                            variant="outlined"
+                            icon="square-plus" 
+                            href="exports/add"
+                        >
+                            Add
+                        </Button>
                     </section>
                     <Table
                         columns={[

@@ -1,8 +1,8 @@
 'use client';
 
-import { getCustomerById } from "@/api/customer";
 import { getEmployeeById } from "@/api/employee";
-import { getExportReceipt } from "@/api/exportReceipt";
+import { getImportReceipt } from "@/api/importReceipt";
+import { getSupplierById } from "@/api/supplier";
 import { getWarehouseById } from "@/api/warehouse";
 import Icon from "@/components/Icon";
 import datetimeFormat from "@/utils/functions/datetimeFormat";
@@ -13,7 +13,7 @@ interface IReceiptData {
     orderId: number,
     warehouse: string,
     employee: string,
-    customer: string,
+    supplier: string,
     dateTime: Date,
 }
 
@@ -29,7 +29,7 @@ export default function ReceiptInfo({
         {title: "Order ID", content: receipt?.orderId},
         {title: "Warehouse", content: receipt?.warehouse},
         {title: "Employee", content: receipt?.employee},
-        {title: "Customer", content: receipt?.customer},
+        {title: "Supplier", content: receipt?.supplier},
         {title: "DateTime", content: datetimeFormat(receipt?.dateTime ?? new Date())},
     ]
 
@@ -40,17 +40,17 @@ export default function ReceiptInfo({
     const fetchReceipt = async () => {
         showLoading();
         try {
-            const {data} = await getExportReceipt(receiptId);
+            const {data} = await getImportReceipt(receiptId);
             const {data: employee} = await getEmployeeById(data.employeeId);
             const {data: warehouse} = await getWarehouseById(data.warehouseId);
-            const {data: customer} = await getCustomerById(data.customerId);
+            const {data: supplier} = await getSupplierById(data.supplierId);
 
             setReceipt({
                 orderId: data.orderId,
                 employee: employee.lastName + " " + employee.firstName,
                 dateTime: data.dateTime,
                 warehouse: warehouse.name,
-                customer: customer.name,
+                supplier: supplier.name,
             });
         }
         catch (error) {

@@ -1,16 +1,15 @@
 'use client';
 
-import { ICustomerResponse, getCustomerById } from "@/api/customer";
-import { IExportOrderResponse, getExportOrderById, updateExportOrderState } from "@/api/exportOrder";
-import { ITrackingStateResponse, getAllTrackingStates, getTrackingStateById, updateTrackingState } from "@/api/trackingState";
+import { ITrackingStateResponse, getAllTrackingStates, getTrackingStateById } from "@/api/trackingState";
 import { IWarehouseResponse, getWarehouseById } from "@/api/warehouse";
 import Icon from "@/components/Icon";
-import datetimeFormat from "@/utils/functions/datetimeFormat";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import useNotification from "@/utils/hooks/useNotification";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ViewMode } from "./page";
 import { useRouter } from "next/navigation";
+import { IImportOrderResponse, getImportOrderById, updateImportOrderState } from "@/api/importOrder";
+import { ISupplierResponse, getSupplierById } from "@/api/supplier";
 
 export default function OrderInfo({
     orderId,
@@ -27,9 +26,9 @@ export default function OrderInfo({
     const [showLoading, hideLoading] = useLoadingAnimation();
     const notify = useNotification();
 
-    const [order, setOrder] = useState<IExportOrderResponse>({
+    const [order, setOrder] = useState<IImportOrderResponse>({
         id: orderId,
-        customerId: 0,
+        supplierId: 0,
         lastUpdatedTime: new Date(),
         trackingStateId: 0,
         warehouseId: 0,
@@ -38,10 +37,10 @@ export default function OrderInfo({
     const [warehouse, setWarehouse] = useState<IWarehouseResponse>();
     const [trackingState, setTrackingState] = useState<ITrackingStateResponse>();
     const [trackingStateList, setTrackingStateList] = useState<ITrackingStateResponse[]>([]);
-    const [customer, setCustomer] = useState<ICustomerResponse>();
+    const [supplier, setSupplier] = useState<ISupplierResponse>();
 
     const infoList: {title: string, content: string | undefined}[] = [
-        {title: "Customer", content: customer?.name},
+        {title: "Supplier", content: supplier?.name},
         {title: "Warehouse", content: warehouse?.name},
         {title: "State", content: trackingState?.name},
         // {title: "Last updated", content: datetimeFormat(order?.lastUpdatedTime ?? new Date())},
@@ -56,16 +55,16 @@ export default function OrderInfo({
     async function fetchOrder() {
         showLoading();
         try {
-            const {data: orderRes} = await getExportOrderById(orderId);
+            const {data: orderRes} = await getImportOrderById(orderId);
             const {data: warehouseRes} = await getWarehouseById(orderRes.warehouseId);
             const {data: trackingStateRes} = await getTrackingStateById(orderRes.trackingStateId);
-            const {data: customerRes} = await getCustomerById(orderRes.customerId);
+            const {data: supplierRes} = await getSupplierById(orderRes.supplierId);
             const {data: trackingStateList} = await getAllTrackingStates();
 
             setOrder(orderRes);
             setWarehouse(warehouseRes);
             setTrackingState(trackingStateRes);
-            setCustomer(customerRes);
+            setSupplier(supplierRes);
             setTrackingStateList(trackingStateList);
 
             setStateId(orderRes?.trackingStateId);
@@ -81,12 +80,12 @@ export default function OrderInfo({
     async function handleUpdateState() {
         if (stateId == order.trackingStateId)
             return;
-        
+
         showLoading();
         try {
             if (stateId == undefined)
                 return;
-            await updateExportOrderState(orderId, {stateId});
+            await updateImportOrderState(orderId, {stateId});
             setOrder({
                 ...order,
                 trackingStateId: stateId,
@@ -187,7 +186,7 @@ export default function OrderInfo({
                                 </div>
                                 <button 
                                     className="justify-self-center flex gap-2 items-center w-fit px-3 py-2 rounded-md border text-blue-500 bg-gray-100  hover:bg-blue-100"
-                                    onClick={() => router.push(`../export-receipts/${order.receiptId}`)}
+                                    onClick={() => router.push(`../import-receipts/${order.receiptId}`)}
                                 >
                                     View
                                     <Icon name="arrow-right" size="xl" /> 

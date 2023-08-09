@@ -67,7 +67,7 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header> 
-                <div></div>
+                <h1 className="font-semibold">Import Receipts</h1>
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">

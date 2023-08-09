@@ -3,11 +3,11 @@ import { getAllImportOrder } from "@/api/importOrder";
 import { getAllSuppliers } from "@/api/supplier";
 import { getAllTrackingStates } from "@/api/trackingState";
 import { getAllWarehouses } from "@/api/warehouse";
+import Button from "@/components/Button";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
-import Table from "@/layouts/Table";
-import { Color } from "@/utils/constants/colors";
+import Table from "@/layouts/Table"; 
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
@@ -69,16 +69,11 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header>
-                <Button 
-                    text="Add Import Order"
-                    color={Color.WHITE}
-                    bgColor={Color.GREEN} 
-                    actionHandler={() => {router.push("imports/add")}}
-                />
+                <h1 className="font-semibold">Import Orders</h1>
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
-                    <section className="flex gap-2 h-10">
+                    <header className="flex justify-between gap-2 h-10">
                         <SearchInput
                             placeholder="Type Import Order ID here..."
                             value={searchValue}
@@ -92,8 +87,15 @@ export default function Page() {
                                     );
                                 setFilteredImports(filterList);
                             }}
-                        />
-                    </section>
+                        /> 
+                        <Button
+                            variant="outlined"
+                            icon="square-plus" 
+                            href="imports/add"
+                        >
+                            Add
+                        </Button>
+                    </header>
                     <Table
                         columns={[
                             {id: 1, text: "Id", key: "id", linkRoot: "imports/"},

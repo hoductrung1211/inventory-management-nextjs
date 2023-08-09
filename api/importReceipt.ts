@@ -5,6 +5,7 @@ const apiPrefix = "/importReceipts";
 export interface ICreateImportReceipt {
     importOrderId: number,
     warehouseId: number,
+    supplierId: number,
     receiptDetails: {
         productId: number,
         quantity: number,
@@ -21,6 +22,7 @@ export interface IImportReceiptResponse {
     orderId: number,
     warehouseId: number,
     employeeId: number,
+    supplierId: number,
     dateTime: Date,
 }
 

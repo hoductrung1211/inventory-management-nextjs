@@ -1,10 +1,10 @@
 'use client';
 
-import { getExportOrderById } from "@/api/exportOrder";
-import { getExportOrdersDetailById } from "@/api/exportOrderDetail";
 import { createExportReceipt } from "@/api/exportReceipt";
+import { getImportOrderById } from "@/api/importOrder";
+import { getImportOrdersDetailById } from "@/api/importOrderDetail";
+import { createImportReceipt } from "@/api/importReceipt";
 import { getAllProducts } from "@/api/product";
-import { getWarehouseById } from "@/api/warehouse";
 import Icon from "@/components/Icon";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import useNotification from "@/utils/hooks/useNotification";
@@ -36,7 +36,7 @@ export default function TableReceiptView({
     const fetchDetails = async () => {
         showLoading();
         try {
-            const {data: orderDetails} = await getExportOrdersDetailById(orderId);
+            const {data: orderDetails} = await getImportOrdersDetailById(orderId);
             const {data: products} = await getAllProducts();
 
             setDetails(orderDetails.map(detail => {
@@ -70,7 +70,7 @@ export default function TableReceiptView({
         }));
         
         try {
-            const {data: order} = await getExportOrderById(orderId);
+            const {data: order} = await getImportOrderById(orderId);
 
             console.log({
                 orderId: orderId,
@@ -78,10 +78,10 @@ export default function TableReceiptView({
                 receiptDetails: dataDetails
             });
 
-            await createExportReceipt({
-                orderId: orderId,
+            await createImportReceipt({
+                importOrderId: orderId,
                 warehouseId: order.warehouseId,
-                customerId: order.customerId,
+                supplierId: order.supplierId,
                 receiptDetails: dataDetails
             });
 

@@ -3,13 +3,12 @@ import { getAllEmployees } from "@/api/employee";
 import { getAllExportReceipt } from "@/api/exportReceipt";
 import { getAllWarehouses } from "@/api/warehouse";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header  from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import datetimeFormat from "@/utils/functions/datetimeFormat";
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export interface IReceipt {
@@ -65,7 +64,7 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header> 
-                <div></div>
+                <h1 className="font-semibold">Export Receipts</h1>
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">

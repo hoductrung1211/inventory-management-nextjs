@@ -11,7 +11,7 @@ export default function SearchInput({
     handleChange: (e: ChangeEvent<HTMLInputElement>) => void,
 }) {
     return (
-        <div className="h-full py-1 pl-2 border-2 rounded-md overflow-hidden">
+        <div className="h-full py-1 pl-2 border rounded-md overflow-hidden">
             <input 
                 className="h-full " 
                 type="text"

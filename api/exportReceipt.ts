@@ -5,6 +5,7 @@ const apiPrefix = "/exportReceipts";
 export interface ICreateExportReceipt {
     orderId: number,
     warehouseId: number,
+    customerId: number,
     receiptDetails: {
         productId: number,
         quantity: number,
@@ -21,6 +22,7 @@ export interface IExportReceiptResponse {
     orderId: number,
     warehouseId: number,
     employeeId: number,
+    customerId: number,
     dateTime: Date,
 }
 
