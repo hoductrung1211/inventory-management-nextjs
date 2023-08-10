@@ -7,7 +7,13 @@ export const enum HomeUrls {
 const staffBasePath = "/staff-dashboard/";
 export const enum staffUrls {
     Home = staffBasePath,
+    ImportReceipts = staffBasePath + "import-receipts/",
+    ExportReceipts = staffBasePath + "export-receipts/",
+    Imports = staffBasePath + "imports/",
+    Exports = staffBasePath + "exports/",
     Products = staffBasePath + "products/",
+    ProductCategories = staffBasePath + "product-categories/",
+    Warehouses = staffBasePath + "warehouses/",
 }
 
 const adminBasePath = "/admin-dashboard/";

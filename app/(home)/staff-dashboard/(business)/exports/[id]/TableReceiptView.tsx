@@ -1,9 +1,10 @@
 'use client';
 
-import { getImportOrderById } from "@/api/importOrder";
-import { getImportOrdersDetailById } from "@/api/importOrderDetail";
-import { createImportReceipt } from "@/api/importReceipt";
+import { getExportOrderById } from "@/api/exportOrder";
+import { getExportOrdersDetailById } from "@/api/exportOrderDetail";
+import { createExportReceipt } from "@/api/exportReceipt";
 import { getAllProducts } from "@/api/product";
+import { getWarehouseById } from "@/api/warehouse";
 import Icon from "@/components/Icon";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import useNotification from "@/utils/hooks/useNotification";
@@ -27,7 +28,7 @@ export default function TableReceiptView({
     const notify = useNotification();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const [details, setDetails] = useState<IDetailData[]>([]);
-
+    
     useEffect(() => {
         fetchDetails();
     }, []);
@@ -35,7 +36,7 @@ export default function TableReceiptView({
     const fetchDetails = async () => {
         showLoading();
         try {
-            const {data: orderDetails} = await getImportOrdersDetailById(orderId);
+            const {data: orderDetails} = await getExportOrdersDetailById(orderId);
             const {data: products} = await getAllProducts();
 
             setDetails(orderDetails.map(detail => {
@@ -69,19 +70,18 @@ export default function TableReceiptView({
         }));
         
         try {
-            const {data: order} = await getImportOrderById(orderId);
+            const {data: order} = await getExportOrderById(orderId);
 
             console.log({
                 orderId: orderId,
                 warehouseId: order.warehouseId,
-                supplierId: order.supplierId,
                 receiptDetails: dataDetails
             });
 
-            await createImportReceipt({
-                importOrderId: orderId,
+            await createExportReceipt({
+                orderId: orderId,
                 warehouseId: order.warehouseId,
-                supplierId: order.supplierId,
+                customerId: order.customerId,
                 receiptDetails: dataDetails
             });
 

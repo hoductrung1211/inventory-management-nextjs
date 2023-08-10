@@ -1,6 +1,7 @@
 'use client';
 
-import { getImportReceiptDetail } from "@/api/importReceiptDetail";
+import { getExportOrdersDetailById } from "@/api/exportOrderDetail";
+import { getExportReceiptDetail } from "@/api/exportReceiptDetail";
 import { getAllProducts } from "@/api/product";
 import Icon from "@/components/Icon";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
@@ -27,7 +28,7 @@ export default function TableDetailView({
     const fetchDetails = async () => {
         showLoading();
         try {
-            const {data: orderDetails} = await getImportReceiptDetail(orderId);
+            const {data: orderDetails} = await getExportReceiptDetail(orderId);
             const {data: products} = await getAllProducts();
 
             setDetails(orderDetails.map(detail => {

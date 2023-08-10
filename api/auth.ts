@@ -8,3 +8,7 @@ export const login = async (username: string, password: string) => {
     form.append("password", password);
     return axios.post<string>(`${apiPrefix}/login`, form);
 }
+
+export const getName =async () => {
+    return axios.get<string>(`${apiPrefix}`);
+}

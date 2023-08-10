@@ -1,10 +1,9 @@
 'use client';
-
 import { useRouter } from "next/navigation";
 import NavGroup, { FuncNav } from "@/components/NavGroup"
 import Sidebar from "@/layouts/Sidebar"
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
-import { HomeUrls, staffUrls } from "@/utils/constants/urls"; 
+import { HomeUrls } from "@/utils/constants/urls"; 
 import { staffNavs } from "@/utils/constants/navs";
 
 export default function Layout({
@@ -17,7 +16,8 @@ export default function Layout({
 
     function logout() {
         showLoading();
-        router.push(HomeUrls.Home);
+        localStorage.removeItem('token');
+        router.push(HomeUrls.StaffLogin);
         hideLoading();
     }
     return (

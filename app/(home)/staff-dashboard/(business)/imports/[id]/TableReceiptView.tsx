@@ -1,5 +1,6 @@
 'use client';
 
+import { createExportReceipt } from "@/api/exportReceipt";
 import { getImportOrderById } from "@/api/importOrder";
 import { getImportOrdersDetailById } from "@/api/importOrderDetail";
 import { createImportReceipt } from "@/api/importReceipt";
@@ -27,7 +28,7 @@ export default function TableReceiptView({
     const notify = useNotification();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const [details, setDetails] = useState<IDetailData[]>([]);
-
+    
     useEffect(() => {
         fetchDetails();
     }, []);
@@ -74,7 +75,6 @@ export default function TableReceiptView({
             console.log({
                 orderId: orderId,
                 warehouseId: order.warehouseId,
-                supplierId: order.supplierId,
                 receiptDetails: dataDetails
             });
 

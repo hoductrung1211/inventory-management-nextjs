@@ -37,19 +37,7 @@ export default function Page({
         <section className="w-full flex flex-col">
             <Header>
                 <div className="flex items-center gap-4">
-                    <BackwardButton />
-                    {/* <Button
-                        text="Edit Information"
-                        color={Color.WHITE}
-                        bgColor={Color.BLUE} 
-                        actionHandler={() => {router.push(`${orderId}/edit`)}}
-                    /> 
-                    <Button
-                        text="Edit Products"
-                        color={Color.WHITE}
-                        bgColor={Color.BLUE} 
-                        actionHandler={() => {router.push(`${orderId}/edit-products`)}}
-                    />  */}
+                    <BackwardButton /> 
                     <h1 className="font-semibold">Import Order Details</h1>
                 </div>
             </Header>

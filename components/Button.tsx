@@ -21,7 +21,7 @@ export default function Button({
     if (variant == "contained") 
         className += "bg-blue-500 text-white hover:bg-opacity-90";
     else {
-        className += " text-blue-500 hover:bg-gray-50 ";
+        className += " bg-white text-blue-500 hover:bg-gray-50 ";
         if (variant == "outlined")
             className += " border border-blue-400 ";
     }

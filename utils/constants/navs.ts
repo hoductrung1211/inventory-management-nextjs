@@ -19,7 +19,14 @@ export interface IFuncNavType {
 }
 
 export const staffNavs = [
-    {icon: 'house', url: staffUrls.Products, text: "My room"}, 
+    // {icon: 'house', url: staffUrls.Home, text: "Home"}, 
+    {icon: 'receipt', url: staffUrls.ImportReceipts, text: "Import Receipts"}, 
+    {icon: 'file-invoice-dollar', url: staffUrls.ExportReceipts, text: "Export Receipts"}, 
+    {icon: 'dolly', url: staffUrls.Imports, text: "Import Orders"}, 
+    {icon: 'truck-fast', url: staffUrls.Exports, text: "Export Orders"}, 
+    {icon: 'box-open', url: staffUrls.Products, text: "Products"}, 
+    {icon: 'boxes-stacked', url: staffUrls.ProductCategories, text: "Product Categories"}, 
+    // {icon: 'warehouse', url: staffUrls.Warehouses, text: "Warehouses"}, 
 ]
 
 export const adminNavs = [

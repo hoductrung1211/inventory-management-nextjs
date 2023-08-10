@@ -153,7 +153,7 @@ export default function Page() {
                         Create
                     </Button>
 
-                    <h1 className="font-semibold">Create Export Order</h1>
+                    <h1 className="font-semibold">Create Import Order</h1>
                 </div>
             </Header>
             <Main>

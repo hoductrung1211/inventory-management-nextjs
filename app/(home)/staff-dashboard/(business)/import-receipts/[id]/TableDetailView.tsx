@@ -1,5 +1,7 @@
 'use client';
 
+import { getExportOrdersDetailById } from "@/api/exportOrderDetail";
+import { getExportReceiptDetail } from "@/api/exportReceiptDetail";
 import { getImportReceiptDetail } from "@/api/importReceiptDetail";
 import { getAllProducts } from "@/api/product";
 import Icon from "@/components/Icon";

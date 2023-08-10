@@ -1,6 +1,6 @@
 'use client';
 
-import { getImportReceiptDetail } from "@/api/importReceiptDetail";
+import { getImportOrdersDetailById } from "@/api/importOrderDetail";
 import { getAllProducts } from "@/api/product";
 import Icon from "@/components/Icon";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
@@ -27,7 +27,7 @@ export default function TableDetailView({
     const fetchDetails = async () => {
         showLoading();
         try {
-            const {data: orderDetails} = await getImportReceiptDetail(orderId);
+            const {data: orderDetails} = await getImportOrdersDetailById(orderId);
             const {data: products} = await getAllProducts();
 
             setDetails(orderDetails.map(detail => {
@@ -53,7 +53,7 @@ export default function TableDetailView({
             <div className="flex items-center py-2 gap-3">
                 <div className="w-12 aspect-square grid place-items-center rounded-full text-gray-700 bg-slate-200"><Icon name="box" size="xl" /></div>
                 <h3 className="font-semibold">
-                    Receipt Items
+                    Order Items
                 </h3>
             </div>
             <div className=" flex flex-col h-full">
@@ -75,7 +75,7 @@ export default function TableDetailView({
                 </main>
             </div>
             <div className="h-full flex flex-col justify-between bg-gray-50 p-3 ">
-                <p className="h-6 flex items-center font-semibold">RECEIPT SUMMARY</p> 
+                <p className="h-6 flex items-center font-semibold">ORDER SUMMARY</p> 
                 <p className=" flex items-center justify-between">
                     <span className="">Sub Total</span>
                     VND {total.toLocaleString()}
