@@ -25,6 +25,8 @@ export default function Page() {
 
     async function handleLogin(e: FormEvent) {
         e.preventDefault();
+        if (!checkConstraints())
+            return;
 
         try {
             showLoading();
@@ -34,13 +36,34 @@ export default function Page() {
         } 
         catch(error) {
             if (axios.isAxiosError(error)) {
-                console.log(error.response?.data);
-                notify("Wrong username or password!", "error");
+                notify(error.response?.data, "error");
             }
+            else notify("Đăng nhập thất bại!", "error");
         }
         finally {
             hideLoading();
         }
+    }
+
+    const checkConstraints = (): boolean => {
+        const newErrors: {username: false | string, password: false | string} = {
+            username: false,
+            password: false,
+        };
+        if (credentials.username.trim() == "") {
+            newErrors.username = "Username không được trống!";
+        }
+        if (credentials.password.trim() == "") {
+            newErrors.password = "Password không được trống!";
+        }
+        
+        if (newErrors.username || newErrors.password) {
+            notify("Vui lòng điền đầy đủ thông tin!", "danger");
+            setErrors(newErrors);
+            return false;
+        }
+
+        return true;
     }
 
     return (
@@ -59,7 +82,13 @@ export default function Page() {
                     placeholder="N19DCCN001"
                     error={errors.username}
                     value={credentials.username}
-                    handleChangeInput={e => setCredentials({...credentials, username: e.target.value})}
+                    handleChangeInput={e => {
+                        setCredentials({...credentials, username: e.target.value});
+                        setErrors({
+                            ...errors,
+                            username: false
+                        });
+                    }}
                 />
                 <Input
                     icon="key"
@@ -68,7 +97,13 @@ export default function Page() {
                     type="password"
                     error={errors.password}
                     value={credentials.password}
-                    handleChangeInput={e => setCredentials({...credentials, password: e.target.value})}
+                    handleChangeInput={e => {
+                        setCredentials({...credentials, password: e.target.value});
+                        setErrors({
+                            ...errors,
+                            password: false
+                        });
+                    }}
                 />
                 <Button text="Log in" />
             </Form> 
