@@ -1,6 +1,6 @@
 'use client';
 import { getName } from "@/api/auth";  
-import { getExportReceiptDetailOverview, getImportReceiptDetailOverview } from "@/api/overview";
+import { ImportOrderOverview, getExportReceiptDetailOverview, getImportOrderOverview, getImportReceiptDetailOverview } from "@/api/overview";
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import Header from "@/layouts/DashboardHeader";
@@ -170,6 +170,13 @@ function SatisticItem({
 }
 
 function DashboardBottom() {
+    const [importOrderOverview, setOverview] = useState<ImportOrderOverview>();
+
+    useEffect(() => {
+        getImportOrderOverview()
+        .then(res => setOverview(res.data));
+    }, []);
+
     return (
         <section className="flex flex-col h-full border">
             <header className="flex-shrink-0 flex gap-2 h-14 p-2 border-b bg-white">
@@ -239,7 +246,7 @@ function DashboardBottom() {
                             </div>
                             <div className="w-full h-full flex items-center justify-between pr-10">
                                 <h3 className="text-lg font-semibold">Count</h3>
-                                <p className="text-xl font-bold text-center">24</p> 
+                                <p className="text-xl font-bold text-center">{importOrderOverview?.count}</p> 
                             </div>
                         </div>
                         <div className="w-1/2 p-4 flex justify-between items-center gap-10 rounded-md  bg-gray-100">
@@ -248,7 +255,7 @@ function DashboardBottom() {
                             </div>
                             <div className="w-full h-full flex items-center justify-between pr-10">
                                 <h3 className="text-lg font-semibold">Unfinished Count</h3>
-                                <p className="text-xl font-bold text-center">4</p> 
+                                <p className="text-xl font-bold text-center">{importOrderOverview?.unfinishedCount}</p> 
                             </div>
                         </div>
                     </div>

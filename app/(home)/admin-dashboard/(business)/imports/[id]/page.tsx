@@ -1,9 +1,8 @@
 'use client';
 
 import BackwardButton from "@/components/BackwardButton";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
-import { Color } from "@/utils/constants/colors";
 import { useRouter } from "next/navigation";
 import TableDetailView from "./TableDetailView";
 import OrderInfo from "./OrderInfo";
@@ -44,7 +43,7 @@ export default function Page({
             <Main>
                 <div className="w-full h-full flex gap-3">
                     <OrderInfo 
-                        key={isUpdated + ""}
+                        key={isUpdated + "info"}
                         orderId={orderId}
                         mode={mode}
                         setMode={setMode}
@@ -54,6 +53,7 @@ export default function Page({
                         mode == ViewMode.Trackings 
                         ? 
                             <TableTrackingView
+                                key={isUpdated + "TrackingView"}
                                 orderId={orderId}
                             />
                         :
@@ -62,6 +62,7 @@ export default function Page({
                             <TableReceiptView
                                 orderId={orderId}
                                 handleRefreshInfo={handleRefreshInfo}
+                                backToViewMode={() => setMode(ViewMode.Items)}
                             />
                             :
                             <TableDetailView   

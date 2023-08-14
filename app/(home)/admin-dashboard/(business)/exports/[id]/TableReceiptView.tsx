@@ -21,9 +21,11 @@ interface IDetailData {
 export default function TableReceiptView({
     orderId,
     handleRefreshInfo,
+    backToViewMode
 }: {
     orderId: number,
     handleRefreshInfo: () => void,
+    backToViewMode: () => void,
 }) {
     const notify = useNotification();
     const [showLoading, hideLoading] = useLoadingAnimation();
@@ -87,6 +89,7 @@ export default function TableReceiptView({
 
             handleRefreshInfo();
             notify("Create receipt successfully!", "success");
+            backToViewMode();
         }
         catch (error) {
             console.log(error);

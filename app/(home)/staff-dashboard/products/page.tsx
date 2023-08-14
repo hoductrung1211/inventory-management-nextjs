@@ -1,11 +1,10 @@
 'use client';
-import { ICategoryResponse, GetAllCategories } from "@/api/category";
-import { IProductResponse, getAllProducts } from "@/api/product";
+import { GetAllCategories } from "@/api/category";
+import { getAllProducts } from "@/api/product";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
-import { Color } from "@/utils/constants/colors";
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";

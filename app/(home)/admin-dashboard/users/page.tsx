@@ -3,12 +3,11 @@ import { IBranchResponse, getAllBranches } from "@/api/branch";
 import { IEmployeeResponse, getAllEmployees } from "@/api/employee";
 import { GetAllRoles } from "@/api/role";
 import { GetAllUsers } from "@/api/user";
-import { IWarehouseResponse, getAllWarehouses } from "@/api/warehouse";
+import PageTitle from "@/components/PageTitle";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header  from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
-import { Color } from "@/utils/constants/colors";
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
@@ -23,7 +22,6 @@ interface IUserData {
 }
 
 export default function Page() {
-    const router = useRouter();
     const [showLoading, hideLoading] = useLoadingAnimation();
 
     const [searchValue, setSearchValue] = useState("");
@@ -68,7 +66,7 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header> 
-                <div></div>
+                <PageTitle text="User List" /> 
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">

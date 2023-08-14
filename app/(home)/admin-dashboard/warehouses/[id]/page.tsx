@@ -2,28 +2,22 @@
 import { getBranchById } from "@/api/branch";
 import { deleteWarehouse, getWarehouseById } from "@/api/warehouse";
 import BackwardButton from "@/components/BackwardButton";
-import Title from "@/components/DashboardTitle";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
-import { Color } from "@/utils/constants/colors";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import InfoBar from "@/components/InfoBar";
 import Table from "@/layouts/Table";
 import { getWhsProductsByWarehouse, IWarehouseProductResponse } from "@/api/stock";
 import { IProductResponse, getAllProducts } from "@/api/product";
 import usePopup from "@/utils/hooks/usePopup";
 import Popup from "@/components/Popup";
 import useNotification from "@/utils/hooks/useNotification";
-
-interface IWarehouse {
-    id: number,
-    name: string,
-    address: string,
-    branchName: string,
-}
+import Title from "@/components/Title";
+import InfoContainer, { InfoItem } from "@/components/InfoContainer";
+import ControlContainer, { ControlItem } from "@/components/ControlContainer";
+import Button from "@/components/Button";
+import PageTitle from "@/components/PageTitle";
 
 interface IProduct {
     id: number,
@@ -36,36 +30,53 @@ export default function Page({
 }: {
     params: {id: string}
 }) {
+    const warehouseId = Number.parseInt(params.id);
+    
+    return (
+        <section className="w-full flex flex-col">
+            <Header>
+                <div className="flex items-center gap-4">
+                    <BackwardButton />
+                    <PageTitle text="Warehouse Details" />
+                </div>
+            </Header>
+            <Main>
+                <div className="w-full h-full flex gap-3">
+                    <InfoSection warehouseId={warehouseId} />
+                    <ProductSection warehouseId={warehouseId} />
+                </div>
+            </Main>
+        </section>
+    )
+}
+
+function InfoSection({
+    warehouseId
+}: {
+    warehouseId: number
+}) {
+    const notify = useNotification();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const router = useRouter();
-    const warehouseId = Number.parseInt(params.id);
-    const [products, setProducts] = useState<IProduct[]>([]);
-    const [warehouse, setWarehouse] = useState<IWarehouse>({
-        id: 1,
-        name: "",
-        address: "",
-        branchName: ""
-    });
     const popup = usePopup();
-    const notify = useNotification();
+    const [infoList, setInfoList] = useState<{title: string, content: string}[]>([]);
 
     useEffect(() => {
-        fetchWarehouse();
-        fetchWarehouseProducts();
+        fetchWarehouseInfo(); 
     }, []);
-
-    async function fetchWarehouse() {
+    
+    async function fetchWarehouseInfo() {
+        showLoading();
         try {
-            showLoading();
-            const {data: warehouseData} = await getWarehouseById(warehouseId);
-            const {data: branchData} = await getBranchById(warehouseData.branchId);
+            const {data} = await getWarehouseById(warehouseId);
+            const {data: branch} = await getBranchById(data.branchId);
 
-            setWarehouse({
-                id: warehouseData.id,
-                name: warehouseData.name,
-                address: warehouseData.address,
-                branchName: branchData.name ?? ""
-            })
+            setInfoList([
+                {title: "ID", content: data.id.toString()},
+                {title: "Name", content: data.name },
+                {title: "Address", content: data.address },
+                {title: "Branch", content:  branch.name},
+            ])
         }
         catch (error) {
             console.log(error);
@@ -74,6 +85,87 @@ export default function Page({
             hideLoading();
         }
     }
+
+    async function deleteThisWarehouse() {
+        try {
+            showLoading();
+            await deleteWarehouse(warehouseId);
+            router.push("./")
+            notify("Delete warehouse successfully!", "success");
+        }
+        catch (error) {
+            console.log(error);
+            notify("Delete warehouse failed!", "error");
+        }
+        finally {
+            hideLoading();
+        }
+    }
+
+    const deleteWarehousePopup = 
+        <Popup text="This warehouse will be deleted, you're sure?">
+            <Button 
+                variant="contained"
+                onClick={() => {
+                    popup.hide();
+                    deleteThisWarehouse();
+                }}
+            >
+                Delete
+            </Button>
+            <Button   
+                onClick={() => {popup.hide()}}
+            >Cancel</Button>
+        </Popup>
+
+    return (
+        <section className="w-1/2 p-3 flex flex-col gap-5  border ">
+            <Title icon="warehouse">Warehouse</Title>
+            
+            <InfoContainer>
+            {infoList.map(info => (
+                <InfoItem info={info} />
+            ))}                            
+            </InfoContainer>
+            
+            <ControlContainer>
+                <ControlItem text="Edit Information">
+                    <div className="w-full flex py-1 px-2 justify-end">
+                        <Button
+                            variant="outlined"
+                            icon="arrow-right"
+                            href={`${warehouseId}/edit`}
+                        >Go</Button>
+                    </div>
+                </ControlItem>
+                <ControlItem text="Delete">
+                    <div className="w-full flex py-1 px-2 justify-end">
+                        <Button
+                            variant="outlined"
+                            icon="trash"
+                            onClick={() => {
+                                popup.show(deleteWarehousePopup);
+                            }}
+                        >Delete</Button>
+                    </div>
+                </ControlItem>
+            </ControlContainer>
+        </section>
+    )
+}
+
+function ProductSection({
+    warehouseId
+}: {
+    warehouseId: number
+}) {
+    const [showLoading, hideLoading] = useLoadingAnimation();
+    const [products, setProducts] = useState<IProduct[]>([]); 
+    const notify = useNotification();
+
+    useEffect(() => {
+        fetchWarehouseProducts();
+    }, []);
 
     async function fetchWarehouseProducts() {
         try {
@@ -103,129 +195,10 @@ export default function Page({
         finally {
             hideLoading();
         }
-    }
-
-    async function deleteThisWarehouse() {
-        try {
-            showLoading();
-            await deleteWarehouse(warehouseId);
-            router.push("./")
-            notify("Delete warehouse successfully!", "success");
-        }
-        catch (error) {
-            console.log(error);
-            notify("Delete warehouse failed!", "error");
-        }
-        finally {
-            hideLoading();
-        }
-    }
-
-    const deleteWarehousePopup = 
-        <Popup text="This warehouse will be deleted, you're sure?">
-            <Button
-                text="Delete"
-                color={Color.WHITE}
-                bgColor={Color.RED} 
-                actionHandler={() => {
-                    popup.hide();
-                    deleteThisWarehouse();
-                }}
-            />
-            <Button
-                text="Cancel"
-                color={Color.BLACK}
-                bgColor={Color.WHITE} 
-                actionHandler={() => {popup.hide()}}
-            />
-        </Popup>
+    } 
 
     return (
-        <section className="w-full flex flex-col">
-            <Header>
-                <div className="flex gap-4">
-                    <BackwardButton />
-                    <Button
-                        text="Edit"
-                        color={Color.WHITE}
-                        bgColor={Color.ORANGE} 
-                        actionHandler={() => router.push(`${warehouseId}/edit`)}
-                    />
-                    <Button
-                        text="Delete"
-                        color={Color.WHITE}
-                        bgColor={Color.RED} 
-                        actionHandler={() => {
-                            popup.show(deleteWarehousePopup);
-                        }}
-                    />
-                </div>
-            </Header>
-            <Main>
-                <div className="w-full h-full flex gap-3">
-                    <InfoSection warehouse={warehouse} />
-                    <ProductSection products={products} />
-                </div>
-            </Main>
-        </section>
-    )
-}
-
-
-
-function InfoSection({
-    warehouse
-}: {
-    warehouse: IWarehouse
-}) {
-    const inforBars: {label: string, key: "id" | "name" | "address" | "branchName", icon: string}[] = [
-        {label: "Id", key: "id", icon: "hashtag"},
-        {label: "Name", key: "name", icon: "signature"},
-        {label: "Address", key: "address", icon: "map-location-dot"},
-        {label: "Branch", key: "branchName", icon: "building"},
-    ];
-
-    return (
-        <section className="w-2/5 p-3 pt-6 h-full flex flex-col border-2 rounded-l-sm gap-6">
-            <Title
-                text="Detailed Information"
-                icon="circle-info"
-                color={Color.BLUE}
-            />
-            <div className="relative w-full h-52">
-                <Image
-                    className="object-contain"
-                    src="/images/warehouse.webp"
-                    alt="Log in image"
-                    fill
-                /> 
-            </div>
-            <div className="flex flex-col gap-3"> 
-                {inforBars.map(infoBar =>
-                    <InfoBar
-                        key={infoBar.label}
-                        label={infoBar.label}
-                        value={warehouse?.[infoBar.key] ?? ""}
-                        icon={infoBar.icon}
-                    />
-                )}
-            </div>
-        </section>
-    )
-}
-
-function ProductSection({
-    products
-}: {
-    products: {
-        id: number,
-        name: string,
-        quantity: number,
-    }[]
-}) {
-    return (
-        <section className="w-3/5 p-3 pt-6 h-full flex flex-col border-2 rounded-r-sm gap-6">
-            <Title text="Products belong to this warehouse" icon="box-open" color={Color.GREEN} />
+        <section className="w-3/5 p-3 h-full flex flex-col border rounded-r-sm gap-6">
             <Table
                 columns={[
                     {id: 1, text: "Id", key: "id", linkRoot: "/admin-dashboard/products/"},

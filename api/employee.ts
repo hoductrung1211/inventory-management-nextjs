@@ -8,7 +8,7 @@ export interface IEmployeeResponse {
     lastName: string,
     address?: string,
     gender: boolean,
-    dateOfBirth?: string,
+    dateOfBirth?: Date,
     email: string,
     salary?: number,
     imageUrl?: string,
@@ -29,12 +29,23 @@ export interface ICreateEmployee {
     managerId?: number,
 }
 
+export interface IEmployeeActivity {
+    orderId: number,
+    dateTime: Date,
+    content: string,
+    type: string
+}
+
 export const getAllEmployees = () => {
     return axios.get<IEmployeeResponse[]>(apiPrefix);
 }
 
 export const getEmployeeById = (id: number) => {
     return axios.get<IEmployeeResponse>(`${apiPrefix}/${id}`)
+}
+
+export const getEmployeeActivities = (id: number) => {
+    return axios.get<IEmployeeActivity[]>(`${apiPrefix}/${id}/activities`)
 }
 
 export const createEmployee = (data: ICreateEmployee) => {

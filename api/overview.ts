@@ -47,7 +47,7 @@ export const getExportReceiptDetailOverview = async () => {
 
 export interface ImportOrderOverview {
     count: number;
-    UnfinishedCount: number
+    unfinishedCount: number
 }
 export const getImportOrderOverview = async () => {
     return axios.get<ImportOrderOverview>(`${apiPrefix}/import-order`);

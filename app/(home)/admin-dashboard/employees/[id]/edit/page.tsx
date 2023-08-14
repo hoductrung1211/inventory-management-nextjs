@@ -8,13 +8,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Title from "@/components/DashboardTitle";
-import InfoBar from "@/components/InfoBar";
 import EditText from "@/components/EditText";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
-import { getWarehouseById, updateWarehouse } from "@/api/warehouse";
 import { IBranchResponse, getAllBranches } from "@/api/branch";
 import DropDown, { IDropdownData } from "@/components/DropDown";
 import { ICreateEmployee, getEmployeeById, updateEmployee } from "@/api/employee";
+import datetimeFormat from "@/utils/functions/datetimeFormat";
 
 export default function Page({
     params

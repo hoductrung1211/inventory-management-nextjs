@@ -25,7 +25,7 @@ export default function Table ({
                             handleRowClick(row.id);
                         }
                     }}
-                    className={`grid grid-cols-${colsCount} min-h-[48px] shrink-0 even:bg-gray-50 border-2 border-transparent hover:border-gray-300 hover:bg-[#ecf0f1]`}>
+                    className={`grid grid-cols-${colsCount} min-h-[48px] shrink-0 even:bg-gray-50 border  border-transparent hover:border-gray-300 hover:bg-[#ecf0f1]`}>
                     {columns.map(col => (
                         <div 
                             key={col.key + col.text} 

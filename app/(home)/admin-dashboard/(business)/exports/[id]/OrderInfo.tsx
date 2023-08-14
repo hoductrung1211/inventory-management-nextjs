@@ -1,7 +1,7 @@
 'use client';
 
 import { ICustomerResponse, getCustomerById } from "@/api/customer";
-import { IExportOrderResponse, getExportOrderById, updateExportOrderState } from "@/api/exportOrder";
+import { IExportOrderResponse, deleteExportOrder, getExportOrderById, updateExportOrderState } from "@/api/exportOrder";
 import { ITrackingStateResponse, getAllTrackingStates, getTrackingStateById, updateTrackingState } from "@/api/trackingState";
 import { IWarehouseResponse, getWarehouseById } from "@/api/warehouse";
 import Icon from "@/components/Icon";
@@ -11,6 +11,9 @@ import useNotification from "@/utils/hooks/useNotification";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ViewMode } from "./page";
 import { useRouter } from "next/navigation";
+import Popup from "@/components/Popup";
+import Button from "@/components/Button";
+import usePopup from "@/utils/hooks/usePopup";
 
 export default function OrderInfo({
     orderId,
@@ -26,6 +29,7 @@ export default function OrderInfo({
     const router = useRouter();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const notify = useNotification();
+    const popup = usePopup();
 
     const [order, setOrder] = useState<IExportOrderResponse>({
         id: orderId,
@@ -119,6 +123,39 @@ export default function OrderInfo({
         else setMode(ViewMode.Items);
     }
 
+    function handleDeleteOrder() {
+        showLoading();
+     
+        deleteExportOrder(orderId)
+        .then(res => {
+            router.push("./")
+            notify("Delete Export Order successfully!", "success");
+        })
+        .catch (error => {
+            console.log(error);
+            notify("Delete Export Order failed!", "error");
+        }) 
+        .finally(() => {
+            hideLoading();
+        });
+    }
+
+    const deletePopup = 
+        <Popup text="This Export Order will be deleted, you're sure?">
+            <Button 
+                variant="contained"
+                onClick={() => {
+                    popup.hide();
+                    handleDeleteOrder();
+                }}
+            >
+                Delete
+            </Button>
+            <Button   
+                onClick={() => {popup.hide()}}
+            >Cancel</Button>
+        </Popup>
+
     return (
         <section className="flex flex-col gap-5 w-1/2 bg-gray-50 p-3">
             {/* Order Info */}
@@ -183,7 +220,7 @@ export default function OrderInfo({
                         {order.receiptId ?
                             <>
                                 <div className="px-2 flex items-center w-52 h-full text-center border rounded-md font-normal">
-                                    This order haven been created receipt   
+                                    This order have been created receipt   
                                 </div>
                                 <button 
                                     className="justify-self-center flex gap-2 items-center w-fit px-3 py-2 rounded-md border text-blue-500 bg-gray-100  hover:bg-blue-100"
@@ -206,6 +243,17 @@ export default function OrderInfo({
                                 </button>
                             </>
                         }
+                    </div> 
+                    <div className="h-12 px-3 py-1 grid grid-cols-3 items-center gap-2 bg-gray-50 border-b font-semibold">
+                        <span className="justify-self-start">Delete This Order</span>  
+                        <div></div>
+                        <button 
+                            className={"justify-self-center flex gap-2 items-center w-fit px-3 py-2 rounded-md border  transition " + (mode == ViewMode.Receipt ? "bg-blue-500 text-gray-50 hover:bg-blue-400" : "text-blue-500 bg-gray-100 hover:bg-blue-100")}
+                            onClick={() => popup.show(deletePopup)}
+                        >
+                            Delete
+                            <Icon name="trash" size="xl" /> 
+                        </button>
                     </div> 
                 </div>
             </div>

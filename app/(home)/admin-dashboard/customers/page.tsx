@@ -1,7 +1,9 @@
 'use client';
 import { ICustomerResponse, getAllCustomers } from "@/api/customer";
+import Button from "@/components/Button";
+import PageTitle from "@/components/PageTitle";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
@@ -39,16 +41,11 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header>
-                <Button 
-                    text="Add Customer"
-                    color={Color.WHITE}
-                    bgColor={Color.GREEN} 
-                    actionHandler={() => router.push("customers/add")}
-                />
+                <PageTitle text="Customer List" /> 
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
-                    <section className="flex gap-2 h-10">
+                    <section className="flex justify-between gap-2 h-10">
                         <SearchInput
                             placeholder="Type customer ID here..."
                             value={searchValue}
@@ -63,6 +60,13 @@ export default function Page() {
                                 setFilterdCustomers(filterList);
                             }}
                         />
+                        <Button
+                            variant="outlined"
+                            icon="square-plus" 
+                            href="customers/add"
+                        >
+                            Add
+                        </Button>
                     </section>
                     <Table
                         columns={[

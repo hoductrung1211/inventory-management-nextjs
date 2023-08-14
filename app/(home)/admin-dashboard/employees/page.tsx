@@ -1,8 +1,10 @@
 'use client';
 import { getAllBranches } from "@/api/branch";
 import { getAllEmployees } from "@/api/employee";
+import Button from "@/components/Button";
+import PageTitle from "@/components/PageTitle";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
@@ -67,16 +69,11 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header>
-                <Button 
-                    text="Add Employee"
-                    color={Color.WHITE}
-                    bgColor={Color.GREEN} 
-                    actionHandler={() => {router.push("employees/add")}}
-                />
+                <PageTitle text="Employee List" /> 
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
-                    <section className="flex gap-2 h-10">
+                    <section className="flex justify-between gap-2 h-10">
                         <SearchInput
                             placeholder="Type Employee ID here..."
                             value={searchValue}
@@ -91,6 +88,13 @@ export default function Page() {
                                 setFilteredEmployees(filterList);
                             }}
                         />
+                        <Button
+                            variant="outlined"
+                            icon="square-plus" 
+                            href="employees/add"
+                        >
+                            Add
+                        </Button>
                     </section>
                     <Table
                         columns={[

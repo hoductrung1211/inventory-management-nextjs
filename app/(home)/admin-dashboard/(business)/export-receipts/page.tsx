@@ -2,6 +2,7 @@
 import { getAllEmployees } from "@/api/employee";
 import { getAllExportReceipt } from "@/api/exportReceipt";
 import { getAllWarehouses } from "@/api/warehouse";
+import PageTitle from "@/components/PageTitle";
 import SearchInput from "@/components/SearchInput";
 import Header  from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
@@ -64,7 +65,7 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header> 
-                <h1 className="font-semibold">Export Receipts</h1>
+                <PageTitle text="Export Receipts" />
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">

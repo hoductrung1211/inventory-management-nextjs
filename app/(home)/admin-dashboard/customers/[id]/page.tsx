@@ -1,13 +1,18 @@
 'use client';
-import { deleteCustomer, getCustomerById } from "@/api/customer";
-import { deleteSupplier, getSupplierById } from "@/api/supplier";
+import { deleteCustomer, getCustomerById, getCustomerReceipts } from "@/api/customer";
+import { IExportReceiptResponse } from "@/api/exportReceipt";
+import { getAllWarehouses, getWarehouseById } from "@/api/warehouse";
 import BackwardButton from "@/components/BackwardButton";
-import Title from "@/components/DashboardTitle";
-import InfoBar from "@/components/InfoBar";
+import Button from "@/components/Button";
+import ControlContainer, { ControlItem } from "@/components/ControlContainer";
+import InfoContainer, { InfoItem } from "@/components/InfoContainer";
+import PageTitle from "@/components/PageTitle";
 import Popup from "@/components/Popup";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Title from "@/components/Title";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
-import { Color } from "@/utils/constants/colors";
+import Table from "@/layouts/Table";
+import datetimeFormat from "@/utils/functions/datetimeFormat";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import useNotification from "@/utils/hooks/useNotification";
 import usePopup from "@/utils/hooks/usePopup";
@@ -27,14 +32,42 @@ export default function Page({
 }: {
     params: {id: string}
 }) {
-    const popup = usePopup();
+    
+    const customerId = Number.parseInt(params.id);
+
+    return (
+        <section className="w-full flex flex-col">
+            <Header>
+                <div className="flex items-center gap-4">
+                    <BackwardButton />
+                    <PageTitle text="Customer Details" />
+                </div>
+            </Header>
+            <Main>
+                <div className="w-full h-full flex gap-3">
+                    <InfoSection customerId={customerId} />
+                    <ReceiptsSection customerId={customerId} />
+                </div>
+            </Main>
+        </section>
+    )
+}
+
+function InfoSection({
+    customerId
+}: {
+    customerId: number
+}) {
     const notify = useNotification();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const router = useRouter();
-
-    const customerId = Number.parseInt(params.id);
-    const [customer, setCustomer] = useState<ICustomer>();
-
+    const popup = usePopup();
+    const [infoList, setInfoList] = useState<{title: string, content: string}[]>([]);
+    
+    useEffect(() => {
+        fetchCustomer();
+    }, []);
+  
     useEffect(() => {
         fetchCustomer();
     }, []);
@@ -43,13 +76,14 @@ export default function Page({
         try {
             showLoading();
             const {data} = await getCustomerById(customerId);
-            setCustomer({
-                id: data.id,
-                name: data.name,
-                phoneNumber: data.phoneNumber,
-                email: data.email,
-                address: data.address ?? "",
-            });
+             
+            setInfoList([
+                {title: "ID", content: data.id.toString()},
+                {title: "Name", content: data.name},
+                {title: "Address", content: data.address},
+                {title: "Phone number", content: data.phoneNumber},
+                {title: "Email", content: data.email},
+            ])
         }
         catch (error) {
             console.log(error);
@@ -75,95 +109,105 @@ export default function Page({
         }
     }
 
-    const deleteSupplierPopup = 
+    const deleteCustomerPopup = 
         <Popup text="This customer will be deleted, you're sure?">
-            <Button
-                text="Delete"
-                color={Color.WHITE}
-                bgColor={Color.RED}
-                actionHandler={() => {
+             <Button 
+                variant="contained"
+                onClick={() => {
                     popup.hide();
                     deleteThisCustomer();
                 }}
-            />
-            <Button
-                text="Cancel"
-                color={Color.BLACK}
-                bgColor={Color.WHITE}
-                actionHandler={() => {
-                    popup.hide();
-                }}
-            />
+            >
+                Delete
+            </Button>
+            <Button   
+                onClick={() => {popup.hide()}}
+            >Cancel</Button>
         </Popup>
 
     return (
-        <section className="w-full flex flex-col">
-            <Header>
-                <div className="flex gap-4">
-                    <BackwardButton />
-                    <Button
-                        text="Edit"
-                        color={Color.WHITE}
-                        bgColor={Color.ORANGE} 
-                        actionHandler={() => router.push(`${customerId}/edit`)}
-                    />
-                    <Button
-                        text="Delete"
-                        color={Color.WHITE}
-                        bgColor={Color.RED} 
-                        actionHandler={() => {
-                            popup.show(deleteSupplierPopup);
-                        }}
-                    />
-                </div>
-            </Header>
-            <Main>
-                <div className="w-full h-full flex gap-3">
-                    {customer && 
-                        <InfoSection
-                            supplier={customer}
-                        />}
+        <section className="w-1/2 p-3 flex flex-col gap-5  border ">
+            <Title icon="cart-shopping">Customer</Title>
+            
+            <InfoContainer>
+            {infoList.map(info => (
+                <InfoItem info={info} />
+            ))}                            
+            </InfoContainer>
+            
+            <ControlContainer>
+                <ControlItem text="Edit Information">
+                    <div className="w-full flex py-1 px-2 justify-end">
+                        <Button
+                            variant="outlined"
+                            icon="arrow-right"
+                            href={`${customerId}/edit`}
+                        >Go</Button>
                     </div>
-            </Main>
+                </ControlItem>
+                <ControlItem text="Delete">
+                    <div className="w-full flex py-1 px-2 justify-end">
+                        <Button
+                            variant="outlined"
+                            icon="trash"
+                            onClick={() => {
+                                popup.show(deleteCustomerPopup);
+                            }}
+                        >Delete</Button>
+                    </div>
+                </ControlItem>
+            </ControlContainer>
         </section>
     )
 }
 
-function InfoSection({
-    supplier
+interface IReceipt {
+    id: number,
+    warehouse: string,
+    dateTime: string,
+}
+
+function ReceiptsSection({
+    customerId 
 }: {
-    supplier: ICustomer
+    customerId: number
 }) {
-    const inforBars: 
-        {
-            label: string, 
-            key: "id" | "name" | "phoneNumber" | "email" | "address" , 
-            icon: string
-        }[] = [
-            {label: "Id", key: "id", icon: "hashtag"}, 
-            {label: "Name", key: "name", icon: "signature"}, 
-            {label: "Phone number", key: "phoneNumber", icon: "phone"}, 
-            {label: "Email", key: "email", icon: "at"}, 
-            {label: "Address", key: "address", icon: "map-location-dot"}, 
-        ];
+    const [receipts, setReceipts] = useState<IReceipt[]>([]);    
+
+    useEffect(() => {
+        fetchReceipts();
+    }, []);
+
+    const fetchReceipts =  async () => {
+        try {
+            const {data} = await getCustomerReceipts(customerId);
+            const {data: warehouses} = await getAllWarehouses();
+
+            setReceipts(data.map(item => {
+                const warehouse = warehouses.find(whs => whs.id == item.warehouseId);
+
+                return {
+                    id: item.id,
+                    dateTime: datetimeFormat(item.dateTime),
+                    warehouse: warehouse?.name + "",
+                }
+            }));
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
-        <section className="w-2/5 p-3 pt-6 h-full flex flex-col border-2 rounded-l-sm gap-6">
-            <Title
-                text="Detailed Information"
-                icon="circle-info"
-                color={Color.BLUE}
-            /> 
-            <div className="flex flex-col gap-3"> 
-                {inforBars.map(infoBar =>
-                    <InfoBar
-                        key={infoBar.label}
-                        label={infoBar.label}
-                        value={supplier?.[infoBar.key] ?? ""}
-                        icon={infoBar.icon}
-                    />
-                )}
-            </div>
+        <section className="w-3/5 p-3 h-full flex flex-col border rounded-r-sm gap-6">
+            <Table
+                columns={[
+                    {id: 1, text: "Export Receipt ID", key: "id", linkRoot: "../export-receipts/"},
+                    {id: 2, text: "Warehouse", key: "warehouse"},
+                    {id: 4, text: "DateTime", key: "dateTime"},
+                ]}
+                dataSet={receipts}
+            />
         </section>
     )
 }

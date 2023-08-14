@@ -1,7 +1,9 @@
 'use client';
 import { IBranchResponse, getAllBranches } from "@/api/branch";
+import Button from "@/components/Button";
+import PageTitle from "@/components/PageTitle";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
 import Table from "@/layouts/Table";
 import { Color } from "@/utils/constants/colors";
@@ -40,16 +42,11 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header>
-                <Button 
-                    text="Add Branch"
-                    color={Color.WHITE}
-                    bgColor={Color.GREEN} 
-                    actionHandler={() => {router.push("branches/add")}}
-                />
+                <PageTitle text="Branch List" /> 
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
-                    <section className="flex gap-2 h-10">
+                    <section className="flex justify-between gap-2 h-10">
                         <SearchInput
                             placeholder="Type branch ID here..."
                             value={searchValue}
@@ -64,6 +61,13 @@ export default function Page() {
                                 setFilterBranches(filterList);
                             }}
                         />
+                        <Button
+                            variant="outlined"
+                            icon="square-plus" 
+                            href="branches/add"
+                        >
+                            Add
+                        </Button>
                     </section>
                     <Table
                         columns={[

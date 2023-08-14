@@ -1,11 +1,12 @@
 'use client';
-import { IBranchResponse, getAllBranches } from "@/api/branch";
-import { IWarehouseResponse, getAllWarehouses } from "@/api/warehouse";
+import { getAllBranches } from "@/api/branch";
+import { getAllWarehouses } from "@/api/warehouse";
+import Button from "@/components/Button";
+import PageTitle from "@/components/PageTitle";
 import SearchInput from "@/components/SearchInput";
-import Header, { Button } from "@/layouts/DashboardHeader";
+import Header from "@/layouts/DashboardHeader";
 import Main from "@/layouts/DashboardMain";
-import Table from "@/layouts/Table";
-import { Color } from "@/utils/constants/colors";
+import Table from "@/layouts/Table"; 
 import filterByFields, { IItem, toIndexSignature } from "@/utils/functions/filterByFields";
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
@@ -59,16 +60,11 @@ export default function Page() {
     return (
         <section className="w-full flex flex-col">
             <Header>
-                <Button 
-                    text="Add Warehouse"
-                    color={Color.WHITE}
-                    bgColor={Color.GREEN} 
-                    actionHandler={() => {router.push("warehouses/add")}}
-                />
+                <PageTitle text="Warehouse List" /> 
             </Header>
             <Main>
                 <div className="w-full h-full flex flex-col gap-3">
-                    <section className="flex gap-2 h-10">
+                    <section className="flex justify-between gap-2 h-10">
                         <SearchInput
                             placeholder="Type warehouse ID here..."
                             value={searchValue}
@@ -83,6 +79,13 @@ export default function Page() {
                                 setFilteredWarehouses(filterList);
                             }}
                         />
+                        <Button
+                            variant="outlined"
+                            icon="square-plus" 
+                            href="warehouses/add"
+                        >
+                            Add
+                        </Button>
                     </section>
                     <Table
                         columns={[

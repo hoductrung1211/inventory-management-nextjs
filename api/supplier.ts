@@ -1,4 +1,5 @@
 import axios from "./axios.config";
+import { IImportReceiptResponse } from "./importReceipt";
 
 const apiPrefix = "/suppliers";
 
@@ -17,6 +18,10 @@ export const getAllSuppliers = () => {
 
 export const getSupplierById = (id: number) => {
     return axios.get<ISupplierResponse>(`${apiPrefix}/${id}`)
+}
+
+export const getSupplierReceipts = (id: number) => {
+    return axios.get<IImportReceiptResponse[]>(`${apiPrefix}/${id}/receipts`);
 }
 
 export const createSupplier = (data: {

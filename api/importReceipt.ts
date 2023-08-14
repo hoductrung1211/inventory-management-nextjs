@@ -33,3 +33,8 @@ export const getAllImportReceipt = () => {
 export const getImportReceipt = (id: number) => {
     return axios.get<IImportReceiptResponse>(`${apiPrefix}/${id}`);
 }
+
+export const deleteImportReceipt = (id: number) => {
+    return axios.delete(`${apiPrefix}/${id}`);
+}
+ 

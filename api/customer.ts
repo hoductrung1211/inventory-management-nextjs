@@ -1,4 +1,5 @@
 import axios from "./axios.config";
+import { IExportReceiptResponse } from "./exportReceipt";
 
 const apiPrefix = "/customers";
 
@@ -16,6 +17,10 @@ export const getAllCustomers = () => {
 
 export const getCustomerById = (id: number) => {
     return axios.get<ICustomerResponse>(`${apiPrefix}/${id}`)
+}
+
+export const getCustomerReceipts = (id: number) => {
+    return axios.get<IExportReceiptResponse[]>(`${apiPrefix}/${id}/receipts`);
 }
 
 export const createCustomer = (data: {

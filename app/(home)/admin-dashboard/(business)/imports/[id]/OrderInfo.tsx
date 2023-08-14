@@ -8,8 +8,11 @@ import useNotification from "@/utils/hooks/useNotification";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ViewMode } from "./page";
 import { useRouter } from "next/navigation";
-import { IImportOrderResponse, getImportOrderById, updateImportOrderState } from "@/api/importOrder";
+import { IImportOrderResponse, deleteImportOrder, getImportOrderById, updateImportOrderState } from "@/api/importOrder";
 import { ISupplierResponse, getSupplierById } from "@/api/supplier";
+import usePopup from "@/utils/hooks/usePopup";
+import Popup from "@/components/Popup";
+import Button from "@/components/Button";
 
 export default function OrderInfo({
     orderId,
@@ -25,6 +28,7 @@ export default function OrderInfo({
     const router = useRouter();
     const [showLoading, hideLoading] = useLoadingAnimation();
     const notify = useNotification();
+    const popup = usePopup();
 
     const [order, setOrder] = useState<IImportOrderResponse>({
         id: orderId,
@@ -118,11 +122,46 @@ export default function OrderInfo({
         else setMode(ViewMode.Items);
     }
 
+    function handleDeleteOrder() {
+        showLoading();
+     
+        deleteImportOrder(orderId)
+        .then(res => {
+            router.push("./")
+            notify("Delete Export Order successfully!", "success");
+        })
+        .catch (error => {
+            console.log(error);
+            notify("Delete Export Order failed!", "error");
+        }) 
+        .finally(() => {
+            hideLoading();
+        });
+    }
+
+    const deletePopup = 
+        <Popup text="This Import Order will be deleted, you're sure?">
+            <Button 
+                variant="contained"
+                onClick={() => {
+                    popup.hide();
+                    handleDeleteOrder();
+                }}
+            >
+                Delete
+            </Button>
+            <Button   
+                onClick={() => {popup.hide()}}
+            >Cancel</Button>
+        </Popup>
+
     return (
         <section className="flex flex-col gap-5 w-1/2 bg-gray-50 p-3">
             {/* Order Info */}
             <div className="flex items-center gap-3">
-                <div className="w-12 aspect-square grid place-items-center rounded-full text-gray-700 bg-slate-200"><Icon name="truck" size="xl" /></div>
+                <div className="w-12 aspect-square grid place-items-center rounded-full text-gray-700 bg-slate-200">
+                    <Icon name="truck" size="xl" />
+                </div>
                 <h3 className="font-semibold">
                     Order #{order?.id}
                 </h3>
@@ -182,7 +221,7 @@ export default function OrderInfo({
                         {order.receiptId ?
                             <>
                                 <div className="px-2 flex items-center w-52 h-full text-center border rounded-md font-normal">
-                                    This order haven been created receipt   
+                                    This order have been created receipt   
                                 </div>
                                 <button 
                                     className="justify-self-center flex gap-2 items-center w-fit px-3 py-2 rounded-md border text-blue-500 bg-gray-100  hover:bg-blue-100"
@@ -205,7 +244,18 @@ export default function OrderInfo({
                                 </button>
                             </>
                         }
-                    </div> 
+                    </div>
+                    <div className="h-12 px-3 py-1 grid grid-cols-3 items-center gap-2 bg-gray-50 border-b font-semibold">
+                        <span className="justify-self-start">Delete This Order</span>  
+                        <div></div>
+                        <button 
+                            className={"justify-self-center flex gap-2 items-center w-fit px-3 py-2 rounded-md border  transition " + (mode == ViewMode.Receipt ? "bg-blue-500 text-gray-50 hover:bg-blue-400" : "text-blue-500 bg-gray-100 hover:bg-blue-100")}
+                            onClick={() => popup.show(deletePopup)}
+                        >
+                            Delete
+                            <Icon name="trash" size="xl" /> 
+                        </button>
+                    </div>  
                 </div>
             </div>
         </section>     

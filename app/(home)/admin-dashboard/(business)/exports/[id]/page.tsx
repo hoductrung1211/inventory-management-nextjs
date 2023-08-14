@@ -44,7 +44,7 @@ export default function Page({
             <Main>
                 <div className="w-full h-full flex gap-3">
                     <OrderInfo 
-                        key={isUpdated + ""}
+                        key={isUpdated + "info"}
                         orderId={orderId}
                         mode={mode}
                         setMode={setMode}
@@ -54,6 +54,7 @@ export default function Page({
                         mode == ViewMode.Trackings 
                         ? 
                             <TableTrackingView
+                                key={isUpdated + "tracking"}
                                 orderId={orderId}
                             />
                         :
@@ -62,6 +63,7 @@ export default function Page({
                             <TableReceiptView
                                 orderId={orderId}
                                 handleRefreshInfo={handleRefreshInfo}
+                                backToViewMode={() => setMode(ViewMode.Items)}
                             />
                             :
                             <TableDetailView   
